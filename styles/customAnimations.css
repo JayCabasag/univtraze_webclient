@@ -1,0 +1,12 @@
+.animate-padding {
+    transition: padding 0.2s;
+}
+
+.animate-display {
+    transition: height 0.2s, opacity 0.2s;
+  }
+.home-main {
+    background-image: url('/assets/bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}

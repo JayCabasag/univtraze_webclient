@@ -1,0 +1,1 @@
+export const CURRENT_SERVER_DOMAIN = 'https://univtraze-web-server-gwluv5z3y-univtraze.vercel.app/api'
