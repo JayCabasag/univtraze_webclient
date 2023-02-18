@@ -1,4 +1,4 @@
-import { IMAGES } from '@/utils/app_constants'
+import { IMAGES } from '../../utils/app_constants'
 import Image from 'next/image'
 import React from 'react'
 

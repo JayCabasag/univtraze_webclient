@@ -4,7 +4,7 @@ import { SignUpMessages } from '@/utils/messages'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-export default function LoginPage() {
+export default function SignUpPage() {
   //data
   const [isFetching, setIsFetching] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -14,7 +14,7 @@ export default function LoginPage() {
 
   //methods
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     const form = e.currentTarget
     const emailInput = form.elements.namedItem('email') as HTMLInputElement
     const passwordInput = form.elements.namedItem('password') as HTMLInputElement

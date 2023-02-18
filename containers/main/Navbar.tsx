@@ -1,5 +1,5 @@
-import { genericPostRequest } from '@/services/genericPostRequest';
-import { IMAGES } from '@/utils/app_constants'
+import { genericPostRequest } from '../../services/genericPostRequest';
+import { IMAGES } from '../../utils/app_constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Router, useRouter } from 'next/router';
@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal';
 import jwt from 'jsonwebtoken'
 import Cookies from 'js-cookie'
-import userStore from '@/states/user/userStates';
-import { setUserStates } from '@/states/user/utils';
+import userStore from '../../states/user/userStates';
+import { setUserStates } from '../../states/user/utils';
 
 export default function Navbar() {
   const router = useRouter()

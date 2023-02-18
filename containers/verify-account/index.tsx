@@ -37,7 +37,7 @@ interface UserDetailsType {
   professorEmployeeId: string 
 }
 
-export default function VerifyAccount() {
+export default function VerifyAccountContainer() {
   //Data
   const router = useRouter()
   const { role } = router.query

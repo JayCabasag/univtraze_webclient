@@ -1,5 +1,5 @@
-import { genericPostRequest } from '@/services/genericPostRequest'
-import { IMAGES, UserTypes } from '@/utils/app_constants'
+import { genericPostRequest } from '../../services/genericPostRequest'
+import { IMAGES } from '../../utils/app_constants'
 import { isEmailValid, isPasswordValid } from '@/utils/helpers'
 import Image from 'next/image'
 import React, { useState } from 'react'
