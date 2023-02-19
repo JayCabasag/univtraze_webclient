@@ -31,11 +31,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
   }
   const token = cookieToken.substring(6)
   const decodedJWT = decodeJWT(token)
-  const uid = decodedJWT.result.id as string
+  const uid = decodedJWT?.result?.id as string
   let props = {isAuthorize: false, redirectUrl: '/', response: {}}
 
   await genericPostRequest({
-    params: {id: uid},
+    params: { id: uid },
     path: '/user/getUserDetailsById',
     success: (response) => {
       const isSuccess = response.success === 1

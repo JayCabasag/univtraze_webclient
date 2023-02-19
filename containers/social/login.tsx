@@ -12,18 +12,33 @@ export default function LoginPage() {
   const [isError, setIsError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isFetching, setIsFetching] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
-
+  console.log(showPassword)
 
   //methods
+  const handleShowPassword = () => {
+    setShowPassword(prevState => !prevState)
+  }
+  const setError = (errorMessageText: string) => {
+    setIsError(true)
+    setErrorMessage(errorMessageText)
+  }
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const usernameInput = form.elements.namedItem("email") as HTMLInputElement;
     const passwordInput = form.elements.namedItem("password") as HTMLInputElement;
   
-    const email = usernameInput.value;
-    const password = passwordInput.value;
+    const email = usernameInput?.value as string;
+    const password = passwordInput?.value as string;
+
+    if (email === ''){
+      return setError('Please input your email')
+    }
+    if (password === '') {
+      return setError('Please input your password')
+    }
 
     setIsFetching(true)
     await genericPostRequest({
@@ -58,14 +73,10 @@ export default function LoginPage() {
     })
   }
 
-
-
-
-
   //templates
   return (
     <main className='flex flex-col h-screen w-screen'>
-        <div className='text-main font-bold text-2xl mt-2 ml-2  md:mt-11 md:ml-12 h-12'><Link href={'/'}>Univtraze</Link></div>
+        <div className='text-main font-bold text-2xl mt-4 ml-4  md:mt-11 md:ml-12 h-12'><Link href={'/'}>Univtraze</Link></div>
         <div 
           className='flex w-full max-w-max-xl self-center flex-col md:flex-row mt-10 md:mt-32 transition-all p-4'
         > 
@@ -83,7 +94,7 @@ export default function LoginPage() {
                   className='max-w-max-sm md:px-8'
                 >
                   <div className="mx-auto max-w-lg">
-                    <form onSubmit={handleLogin} className="mb-0 space-y-4 rounded-lg p-8 shadow-lg">
+                    <form onSubmit={handleLogin} className="mb-0 space-y-4 rounded-lg p-4 md:p-8 shadow-md md:shadow-lg">
                       <p className="text-2xl mb-10 text-main font-medium">Log in</p>
 
                       <div>
@@ -121,40 +132,52 @@ export default function LoginPage() {
 
                         <div className="relative mt-1">
                           <input
-                            type="password"
-                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            id={"password"}
+                            name='password'
                             className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
                             placeholder="Enter password"
                           />
 
-                          <span className="absolute inset-y-0 right-4 inline-flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5 text-gray-400"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              />
-                            </svg>
-                          </span>
+                          <button
+                            onClick={handleShowPassword}
+                            type='button'
+                          >
+                            <span className="absolute inset-y-0 right-4 inline-flex items-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                {
+                                  showPassword
+                                  ? <>
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                  </>
+                                  : <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                }
+                              </svg>
+                            </span>
+                          </button>
                         </div>
                       </div>
                       {isError && <p className='text-red-500'>{errorMessage}</p>}
                       <button
                         type="submit"
-                        className="block w-full rounded-lg hover:bg-main bg-secondary px-5 py-3 text-sm font-medium text-white"
+                        className="block w-full rounded-lg hover:bg-main bg-main px-5 py-3 text-sm font-medium text-white"
                         disabled={isFetching}
                       >
                         {isFetching ? 'Please wait...' : 'Sign in'}

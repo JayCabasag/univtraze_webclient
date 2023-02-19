@@ -27,14 +27,14 @@ export default function HomeContainer() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link href={'/social/signup'}>
               <button
-                className="block w-full rounded bg-main px-12 py-3 text-sm font-medium text-white shadow hover:bg-main focus:outline-none focus:ring active:bg-main sm:w-auto"
+                className="block w-full rounded bg-main px-12 py-3 text-sm font-medium text-white shadow-sm hover:bg-main focus:outline-none focus:ring active:bg-main sm:w-auto"
               >
                 Get Started
               </button>
             </Link>
     
             <Link
-              className="block w-full rounded px-12 py-3 text-sm font-medium text-main shadow hover:text-main focus:outline-none focus:ring active:text-main sm:w-auto"
+              className="max-w-max block w-full rounded px-12 py-3 text-sm font-medium text-main shadow hover:text-main focus:outline-none focus:ring active:text-main sm:w-auto"
               href="/features"
             >
               Learn More

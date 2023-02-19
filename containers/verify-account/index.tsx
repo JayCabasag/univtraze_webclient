@@ -10,14 +10,6 @@ import { storage } from '@/config/firebase-config'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import userStore from '@/states/user/userStates'
 import Image from 'next/image'
-
-interface Props {
-  isAuthorize: boolean,
-  redirectUrl: string,
-  response: any
-}
-
-
 interface UserDetailsType {
   firstname: string
   middlename: string
@@ -311,20 +303,22 @@ export default function VerifyAccountContainer() {
     <div className="bg-gray-100 h-auto p-6 flex flex-col">
       <div className='flex w-full justify-end  py-3 md:p-6'>
         <button 
-          className="text-slate-500 font-bold py-2 px-4 rounded flex items-center justify-center text-sm gap-2"
+          className="text-main font-bold py-2 px-4 rounded flex items-center justify-center text-sm gap-2"
           onClick={handleLogoutUser}
         >
-        <Image src={IMAGES.LOGOUT} height={24} width={24} alt={'logout'}/>
+        <svg fill="none" stroke="currentColor" strokeWidth="2.5" height={20} width={24} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path>
+        </svg>
         Logout
       </button>
       </div>
       <div className="flex items-center justify-center h-full w-full">
         {!hasRole && (
           <div className="w-full max-w-sm h-auto pt-24">
-          <h1 className="text-lg md:text-2xl text-left font-bold mb-4 text-slate-600">Let&apos;s get started</h1>
+          <h1 className="text-lg md:text-2xl text-left font-bold mb-4 text-main">Let&apos;s get started</h1>
             <form className="bg-white px-8 pt-6 pb-8 mb-4 md:w-auto w-full">
               <div className="mb-4">
-                <label className="block text-slate-600 font-bold mb-2 text-sm" htmlFor="role">
+                <label className="block text-main font-bold mb-2 text-sm" htmlFor="role">
                   I&apos;m a
                 </label>
                 <select
@@ -340,7 +334,7 @@ export default function VerifyAccountContainer() {
               </div>
               <div className="flex items-center justify-center">
                 <button
-                  className="bg-green-500 hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-white"
+                  className="bg-main hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-white"
                   type="submit"
                 >
                   Submit
@@ -353,7 +347,7 @@ export default function VerifyAccountContainer() {
           <div className="w-full max-w-2xl flex flex-col md:mt-8">
              <div className="mb-4">
               <h1 
-                className="text-lg md:text-2xl text-left font-bold mb-4 text-slate-600"
+                className="text-lg md:text-2xl text-left font-bold mb-4 text-main"
               >
                 Please your provide additional information
               </h1>
@@ -566,7 +560,7 @@ export default function VerifyAccountContainer() {
                         <button 
                           type='button' 
                           onClick={() => previewImage('front-id')}
-                          className="block px-4 bg-green-500 text-white rounded-lg shadow-sm hover:bg-green-600" 
+                          className="block px-4 bg-main text-white rounded-lg shadow-sm hover:main" 
                         >
                           Preview
                         </button>
@@ -590,7 +584,7 @@ export default function VerifyAccountContainer() {
                         <button 
                           type='button' 
                           onClick={() => previewImage('back-id')}
-                          className="py-0 px-4 bg-green-500 text-white rounded-lg shadow-sm hover:bg-green-600" 
+                          className="py-0 px-4 bg-main text-white rounded-lg shadow-sm hover:bg-main" 
                         >
                         Preview
                         </button>
@@ -603,7 +597,7 @@ export default function VerifyAccountContainer() {
                     )}
                     <div className="mb-4 w-full flex mt-2">
                       <button
-                        className="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline justify-self-end"
+                        className="bg-main hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline justify-self-end"
                         type='submit'
                       >
                         Submit
@@ -617,67 +611,4 @@ export default function VerifyAccountContainer() {
       </div>
     </div>
   )
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
-  const cookieToken = req.headers.cookie as string;
-  if (!cookieToken){
-     res.writeHead(302, {
-      Location: '/'
-     })
-     res.end()
-     return {
-      props: {
-        isAuthorize: true,
-        redirectUrl: '/home',
-        response: {}
-      }
-    }
-  }
-  const token = cookieToken.substring(6)
-  const decodedJWT = decodeJWT(token)
-  const uid = decodedJWT.result.id as string
-  let props = {isAuthorize: false, redirectUrl: '/', response: {}}
-
-  await genericPostRequest({
-    params: {id: uid},
-    path: '/user/getUserDetailsById',
-    success: (response) => {
-      const isSuccess = response.success === 1
-      if (isSuccess){
-        return {
-          props: {
-            isAuthorize: true,
-            redirectUrl: '/verify-account',
-            response: response
-          }
-        } 
-      }
-      res.writeHead(302, {
-        Location: '/'
-      })
-      res.end()
-      return {
-        props: {
-          isAuthorize: false,
-          redirectUrl: '/',
-          response: response
-        }
-      } 
-    },
-    error: (errorResponse) => {
-      return {
-        props: {
-          isAuthorize: false,
-          redirectUrl: '/',
-          response: errorResponse
-        }
-      }
-    },
-    token
-  })
-
-  return {
-    props: props
-  }
 }
