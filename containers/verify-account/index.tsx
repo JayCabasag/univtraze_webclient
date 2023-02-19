@@ -1,614 +1,375 @@
-import { genericPostRequest } from '@/services/genericPostRequest'
-import { IMAGES, UserTypeList } from '@/utils/app_constants'
-import { decodeJWT } from '@/utils/helpers'
-import { logoutUser } from '@/utils/methods'
-import { GetServerSideProps } from 'next'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { UserTypes } from '@/utils/app_constants'
-import { storage } from '@/config/firebase-config'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import React, { useState } from 'react'
 import userStore from '@/states/user/userStates'
-import Image from 'next/image'
-interface UserDetailsType {
-  firstname: string
-  middlename: string
-  lastname: string
-  suffix: string
-  dateOfBirth: string
-  gender: string
-  mobileNumber: string
-  addressLineOne: string
-  addressLineTwo: string
-  backIdPhotoUrl: string
-  frontIdPhotoUrl: string
-  studentId?: string
-  course?: string
-  yearAndSection?: string
-  professorDepartment: string
-  professorEmployeeId: string 
-}
+import { Countries, Genders, Ids } from '@/utils/lists'
+import { useRouter } from 'next/router'
+import { UserTypes } from '@/utils/app_constants'
 
 export default function VerifyAccountContainer() {
-  //Data
-  const router = useRouter()
-  const { role } = router.query
-  const roleValue = role as string ?? ''  
-  const hasRole = roleValue !== ''
-  const { removeUserDetails, email } = userStore(state => state)
-  const uid = userStore((state) => state.uid)
-  const [error, setError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [showFrontId, setShowFrontId] = useState(false)
-  const [showBackId, setShowBackId] = useState(false)
-  const [uploadFrontIdPhotoProgress, setUploadFrontIdPhotoProgress] = useState(0)
-  const [uploadBackIdPhotoProgress, setUploadBackIdPhotoProgress] = useState(0)
-  const [userDetails, setUserDetails] = useState<UserDetailsType>({firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', addressLineOne: '', addressLineTwo: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',  professorDepartment: '', professorEmployeeId: ''})
+  const { email } = userStore(state => state)
+  const [selectedUserType, setSelectedUserType] = useState('')
+  const [visitorSelectedValidId, setVisitorSelectedValidId] = useState('')
 
-  const firebaseStoragePath = `ids/${uid}/`
-
-  //Methods
-  const previewImage = (action: string) => {
-    if(action === 'front-id'){
-      setShowFrontId(prevState => !prevState)
-    }
-    if(action === 'back-id'){
-      setShowBackId(prevState => !prevState)
-    }
+  const handleUpdateUserType = (userTypeEvent: React.ChangeEvent<HTMLInputElement>) => {
+    const typeText = userTypeEvent?.target?.id as string
+    setSelectedUserType(typeText)
+  }
+  const handleUpdateSelectedVisitorValidId = (validIdSelectEvent: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValidIdValue = validIdSelectEvent?.currentTarget?.value
+    setVisitorSelectedValidId(selectedValidIdValue)
   }
 
-  const handleLogoutUser = () => {
-    const { status } = logoutUser()
-    if(status === 'success'){
-      removeUserDetails()
-      return router.replace('/')
-    }
-    alert('Unable to logout')
-  }
-
-  const setEncounteredError = (errorMessageText: string) => {
-    setError(true)
-    setErrorMessage(errorMessageText)
-  }
-
-  const pickFrontIdPhotoFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(event.target.files){
-     let imageFile = event.target.files[0] as File
-     const metadata = {
-         contentType: 'image/jpeg'
-     };
-
-     const storageRef = ref(storage,  firebaseStoragePath + imageFile.name);
-     const uploadTask = uploadBytesResumable(storageRef, imageFile, metadata);
-
-     uploadTask.on('state_changed',
-                 (snapshot) => {
-                     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                     setUploadFrontIdPhotoProgress(progress as number)
-                     switch (snapshot.state) {
-                     case 'paused':
-                         break;
-                     case 'running':
-                         break;
-                     }
-                 }, 
-                 (error) => {
-                     // A full list of error codes is available at
-                     // https://firebase.google.com/docs/storage/web/handle-errors
-                     switch (error.code) {
-                     case 'storage/unauthorized':
-                         // User doesn't have permission to access the object
-                         break;
-                     case 'storage/canceled':
-                         // User canceled the upload
-                         break;
-
-                     // ...
-
-                     case 'storage/unknown':
-                         // Unknown error occurred, inspect error.serverResponse
-                         break;
-                     }
-                 }, 
-                 () => {
-                     // Upload completed successfully, now we can get the download URL
-                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                      setUserDetails(prevState => {
-                        return {...prevState, frontIdPhotoUrl: downloadURL as string}
-                      })
-                     });
-                 }
-             );
-      } 
-  }
-
-  const pickBackIdPhotoFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(event.target.files){
-     let imageFile = event.target.files[0] as File
-     const metadata = {
-         contentType: 'image/jpeg'
-     };
-
-     const storageRef = ref(storage,  firebaseStoragePath + imageFile.name);
-     const uploadTask = uploadBytesResumable(storageRef, imageFile, metadata);
-
-     uploadTask.on('state_changed',
-                 (snapshot) => {
-                     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                     setUploadBackIdPhotoProgress(progress as number)
-                     switch (snapshot.state) {
-                     case 'paused':
-                         break;
-                     case 'running':
-                         break;
-                     }
-                 }, 
-                 (error) => {
-                     // A full list of error codes is available at
-                     // https://firebase.google.com/docs/storage/web/handle-errors
-                     switch (error.code) {
-                     case 'storage/unauthorized':
-                         // User doesn't have permission to access the object
-                         break;
-                     case 'storage/canceled':
-                         // User canceled the upload
-                         break;
-
-                     // ...
-
-                     case 'storage/unknown':
-                         // Unknown error occurred, inspect error.serverResponse
-                         break;
-                     }
-                 }, 
-                 () => {
-                     // Upload completed successfully, now we can get the download URL
-                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                      setUserDetails(prevState => {
-                        return {...prevState, backIdPhotoUrl: downloadURL as string}
-                      })
-                     });
-                 }
-             );
-      } 
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const form = e.currentTarget
-    const formData = new FormData(form)
-    const data = Object.fromEntries(formData.entries());
-    const firstname = data?.['firstName'] as string
-    const middlename = data?.['middleName'] as string
-    const lastname = data?.['lastName'] as string
-    const suffix = data?.['suffix'] as string
-    const dateOfBirth = data?.['dateOfBirth'] as string
-    const gender = data?.['gender'] as string
-    const mobileNumber = data?.['mobileNumber'] as string
-    const addressLineOne = data?.['addressLineOne'] as string
-    const addressLineTwo = data?.['addressLineTwo'] as string
-    const studentId = data?.['studentId'] as string
-    const studentCourse = data?.['course'] as string
-    const studentYearAndSection = data?.['yearAndSection'] as string
-    const professorDepartment = data?.['professorDepartment'] as string
-    const professorEmployeeId = data?.['professorEmployeeId'] as string
-
-    if(firstname === ''){
-      return setEncounteredError('Please add your firstname')
-    }
-    if(middlename === ''){
-      return setEncounteredError('Please add your middlename')
-    }
-    if(lastname === ''){
-      return setEncounteredError('Please add your lastname')
-    }
-    if(gender === ''){
-      return setEncounteredError('Please add your gender')
-    }
-    if(mobileNumber === ''){
-      return setEncounteredError('Please add your mobile number')
-    }
-    if(dateOfBirth === ''){
-      return setEncounteredError('Please add your Date of Birth')
-    }
-    if(addressLineOne === ''){
-      return setEncounteredError('Please add your House No./Lot No./Building No. street, barangay')
-    }
-    if(addressLineTwo === ''){
-      return setEncounteredError('City/Municipality, Province')
-    }
-    if(userDetails?.["frontIdPhotoUrl"] as string === ''){
-      return setEncounteredError('Add back ID photo')
-    }
-    if(userDetails?.["backIdPhotoUrl"] as string === ''){
-      return setEncounteredError('Add back ID photo')
-    }
-
-    if(roleValue === UserTypes.STUDENT && studentId === ''){
-      return setEncounteredError('Add back Student Id')
-    }
-    if(roleValue === UserTypes.STUDENT && studentCourse === ''){
-      return setEncounteredError('Add course')
-    }
-    if(roleValue === UserTypes.STUDENT && studentYearAndSection === ''){
-      return setEncounteredError('Add year and section')
-    }
-
-    if(roleValue === UserTypes.PROFESSOR && professorDepartment === ''){
-      return setEncounteredError('Add your faculty/Department')
-    }
-    if(roleValue === UserTypes.PROFESSOR && professorEmployeeId === ''){
-      return setEncounteredError('Add your Employee Id')
-    }
-
-    if(roleValue === UserTypes.STUDENT){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
-          firstname,
-          middlename,
-          lastname,
-          suffix,
-          dateOfBirth,
-          gender,
-          addressLineOne,
-          addressLineTwo,
-          studentId,
-          studentCourse,
-          studentYearAndSection
-        }
-      })
-    }
-    if(roleValue === UserTypes.PROFESSOR){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
-          firstname,
-          middlename,
-          lastname,
-          suffix,
-          dateOfBirth,
-          gender,
-          addressLineOne,
-          addressLineTwo,
-          professorDepartment,
-          professorEmployeeId
-        }
-      })
-    }
-    if(roleValue === UserTypes.VISITOR){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
-          firstname,
-          middlename,
-          lastname,
-          suffix,
-          dateOfBirth,
-          gender,
-          addressLineOne,
-          addressLineTwo
-        }
-      })
-    }
-
-    setError(false)
-    setErrorMessage('')
-  }
-
-  //Templates
   return (
-    <div className="bg-gray-100 h-auto p-6 flex flex-col">
-      <div className='flex w-full justify-end  py-3 md:p-6'>
-        <button 
-          className="text-main font-bold py-2 px-4 rounded flex items-center justify-center text-sm gap-2"
-          onClick={handleLogoutUser}
-        >
-        <svg fill="none" stroke="currentColor" strokeWidth="2.5" height={20} width={24} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path>
-        </svg>
-        Logout
-      </button>
-      </div>
-      <div className="flex items-center justify-center h-full w-full">
-        {!hasRole && (
-          <div className="w-full max-w-sm h-auto pt-24">
-          <h1 className="text-lg md:text-2xl text-left font-bold mb-4 text-main">Let&apos;s get started</h1>
-            <form className="bg-white px-8 pt-6 pb-8 mb-4 md:w-auto w-full">
-              <div className="mb-4">
-                <label className="block text-main font-bold mb-2 text-sm" htmlFor="role">
-                  I&apos;m a
+    <section>
+    <h1 className="sr-only">User details</h1>
+    <div className="mx-auto grid max-w-screen-2xl grid-cols-1 md:grid-cols-2">
+        <div className="bg-gray-50 py-12 md:py-24">
+        <div className="mx-auto max-w-lg space-y-8 px-4 lg:px-8">
+            <div className="flex items-center gap-4">
+            <span className="h-10 w-10 rounded-full bg-blue-700">
+            <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+            </span>
+
+            <h2 className="font-medium text-gray-900 capitalize">{selectedUserType}</h2>
+            </div>
+
+            <div>
+            <p className="text-2xl font-medium tracking-tight text-gray-900">
+                Please select user type :
+            </p>
+            <p className="mt-1 text-sm text-gray-600 mb-1">Select</p>
+            <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
+                <div>
+                    <input
+                      className="peer sr-only"
+                      id="student"
+                      type="radio"
+                      tabIndex={-1}
+                      name="userType"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateUserType(event)}
+                    />
+
+                    <label
+                        htmlFor="student"
+                        className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
+                        tabIndex={0}
+                    >
+                        <span className="text-sm font-medium"> Student </span>
+                    </label>
+                    </div>
+
+                    <div>
+                    <input
+                        className="peer sr-only"
+                        id="employee"
+                        type="radio"
+                        tabIndex={-1}
+                        name="userType"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateUserType(event)}
+                    />
+
+                    <label
+                        htmlFor="employee"
+                        className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
+                        tabIndex={0}
+                    >
+                        <span className="text-sm font-medium"> Employee </span>
+                    </label>
+                </div>
+
+                <div>
+                <input
+                    className="peer sr-only"
+                    id="visitor"
+                    type="radio"
+                    tabIndex={-1}
+                    name="userType"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateUserType(event)}
+                />
+
+                <label
+                    htmlFor="visitor"
+                    className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
+                    tabIndex={0}
+                >
+                    <span className="text-sm font-medium"> Visitor </span>
+                </label>
+                </div>
+            </div>
+            </div>
+
+            <div>
+            <div className="flow-root">
+                {UserTypes.STUDENT === selectedUserType && (
+                  <div className='w-1/2'>
+                    <label
+                      htmlFor="studentNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Student No.
+                    </label>
+  
+                    <input
+                      type="text"
+                      id="studentNumber"
+                      className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                    />
+                  </div>
+                )}
+                {UserTypes.EMPLOYEE === selectedUserType && (
+                  <div className='w-1/2'>
+                    <label
+                      htmlFor="employeeNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Employee No.
+                    </label>
+  
+                    <input
+                      type="text"
+                      id="employeeNumber"
+                      className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                    />
+                  </div>
+                )}
+                {UserTypes.VISITOR === selectedUserType && (
+                  <div className='w-full'>
+                    <label
+                      htmlFor="validIdNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Select valid ID
+                    </label>
+                    
+                    <select
+                      id="validId"
+                      className="mt-1 relative w-full rounded border-gray-200 focus:z-10 sm:text-sm"
+                      onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleUpdateSelectedVisitorValidId(event)}
+                    >
+                      {Ids.map((id: string, index: number) => {
+                         return <option key={index} className='truncate'>{id}</option>
+                      })
+                    }
+                    </select>
+
+                    <input
+                      type="text"
+                      id="validIdNumber"
+                      className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                      placeholder={`${visitorSelectedValidId} No.`}
+                    />
+                  </div>
+                )}
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div className="bg-white py-12 md:py-24">
+        <div className="mx-auto max-w-lg px-4 lg:px-8">
+            <form className="grid grid-cols-6 gap-4">
+            <div className="col-span-3">
+                <label
+                  htmlFor="FirstName"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                First Name
+                </label>
+
+                <input
+                  type="text"
+                  id="FirstName"
+                  className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                />
+            </div>
+            <div className="col-span-3">
+                <label
+                htmlFor="middleName"
+                className="block text-xs font-medium text-gray-700"
+                >
+                Middle name
+                </label>
+
+                <input
+                type="text"
+                id="middleName"
+                className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                />
+            </div>
+            <div className="col-span-5">
+                <label
+                htmlFor="LastName"
+                className="block text-xs font-medium text-gray-700"
+                >
+                Last Name
+                </label>
+
+                <input
+                type="text"
+                id="LastName"
+                className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                />
+            </div>
+            <div className="col-span-1">
+                <label
+                htmlFor="suffix"
+                className="block text-xs font-medium text-gray-700"
+                >
+                Suffix
+                </label>
+
+                <input
+                  type="text"
+                  id="suffix"
+                  className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                />
+            </div>
+            <div className="col-span-4">
+                <label htmlFor="Email" className="block text-xs font-medium text-gray-700">
+                  Date of Birth
+                </label>
+
+                <input
+                  type="date"
+                  id="dob"
+                  className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                />
+            </div>
+            <div className="col-span-2">
+                <label htmlFor="gender" className="block text-xs font-medium text-gray-700">
+                  Gender
                 </label>
                 <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline capitalize text-slate-500 border-slate-300"
-                  id="role"
-                  name="role"
+                  id="Country"
+                  className="mt-1 relative w-full rounded border-gray-200 focus:z-10 sm:text-sm"
                 >
-                  <option value="">Select your role</option>
-                  {UserTypeList.map((type, index) => {
-                    return <option value={type} key={index} className='capitalize'>{type}</option>
-                  })}
+                 {
+                  Genders.map((country: string, index: number) => {
+                    return <option key={index}>{country}</option>
+                  })
+                 }
                 </select>
-              </div>
-              <div className="flex items-center justify-center">
-                <button
-                  className="bg-main hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-white"
-                  type="submit"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-        {hasRole && (
-          <div className="w-full max-w-2xl flex flex-col md:mt-8">
-             <div className="mb-4">
-              <h1 
-                className="text-lg md:text-2xl text-left font-bold mb-4 text-main"
-              >
-                Please your provide additional information
-              </h1>
-             </div>
-            <div>
-              <form 
-                className="bg-white rounded px-0 pt-0 pb-0 flex flex-col md:flex-row gap-4 w-full" 
-                onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)}>
-                    <div className='w-full md:w-1/2'>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="firstName">
-                          First Name:
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="firstName"
-                          name="firstName"
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="middleName">
-                          Middle Name:
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="middleName"
-                          name="middleName"
-                          type="text"
-                          
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="lastName">
-                          Last Name:
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="lastName"
-                          name="lastName"
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="mb-4 flex flex-row justify-between gap-4">
-                        <div className='w-16'>
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="suffix">
-                            Suffix:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="suffix"
-                            name="suffix"
-                            type="text"
-                          />
-                        </div>
-                        <div className='w-full'>
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="dateOfBirth">
-                            Date of Birth:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full text-slate-500 border-slate-300"
-                            id="dateOfBirth"
-                            name="dateOfBirth"
-                            type="date"
-                            required
-                          />
-                        </div>
-                        <div className='w-full'>
-                        </div>
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="gender">
-                          Gender:
-                        </label>
-                        <select
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="gender"
-                          name="gender"
-                        >
-                          <option value="">Select your gender</option>
-                          <option value="rather-not-say">Rather not say</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                        </select>
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="mobileNumber">
-                          Mobile Number:
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="mobileNumber"
-                          name="mobileNumber"
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="addressLineOne">
-                          House No./ Bldg. No. Street, Barangay:
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="address"
-                          name="addressLineOne"
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="addressLineTwo">
-                          City/Municipality, Province
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                          id="addressLineTwo"
-                          name="addressLineTwo"
-                          type="text"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className='w-full md:w-1/2'>
-                    {roleValue === UserTypes.STUDENT && (
-                       <>
-                        <div className="mb-4">
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="course">
-                            Student Id:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="studentId"
-                            name="studentId"
-                            type="text"
-                            required
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="course">
-                            Course:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="course"
-                            name="course"
-                            type="text"
-                            required
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="yearAndSection">
-                            Year & Section:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="yearAndSection"
-                            name="yearAndSection"
-                            type="text"
-                            required
-                          />
-                        </div>
-                       </>
-                    )}
-
-                    {roleValue === UserTypes.PROFESSOR && (
-                       <>
-                        <div className="mb-4">
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="professor-department">
-                            Department/Faculty:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="professor-department"
-                            name="professorDepartment"
-                            type="text"
-                            required
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="professor-employee-id">
-                            Employee Id:
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
-                            id="professor-employee-id"
-                            name="professorEmployeeId"
-                            type="text"
-                            required
-                          />
-                        </div>
-                       </>
-                    )}
-                    <div className="mb-4">
-                      <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="frontId">
-                        Front ID (
-                          {roleValue === UserTypes.STUDENT && ('Student ID')}
-                          {roleValue === UserTypes.PROFESSOR && ('Employee ID')}
-                          {roleValue === UserTypes.VISITOR && ('Any Valid ID')}
-                        ) :
-                      </label>
-                    <div className='flex gap-2'>
-                      <input className="block py-1 px-3 bg-white rounded-lg appearance-none focus:outline-none focus:shadow-outline border-slate-300 text-slate-500"
-                        type="file" 
-                        id="frontId" 
-                        accept="image/*"
-                        onChange={pickFrontIdPhotoFile}
-                      />
-                        <button 
-                          type='button' 
-                          onClick={() => previewImage('front-id')}
-                          className="block px-4 bg-main text-white rounded-lg shadow-sm hover:main" 
-                        >
-                          Preview
-                        </button>
-                        </div>
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="backId">
-                          Back ID (
-                          {roleValue === UserTypes.STUDENT && ('Student ID')}
-                          {roleValue === UserTypes.PROFESSOR && ('Employee ID')}
-                          {roleValue === UserTypes.VISITOR && ('Any Valid ID')}
-                        ) :
-                        </label>
-                      <div className='flex gap-2'>
-                        <input className="py-1 px-3 bg-white rounded-lg appearance-none focus:outline-none focus:shadow-outline border-slate-300 text-slate-500"
-                          type="file" 
-                          id="backId" 
-                          accept="image/*"
-                          onChange={pickBackIdPhotoFile}
-                        />
-                        <button 
-                          type='button' 
-                          onClick={() => previewImage('back-id')}
-                          className="py-0 px-4 bg-main text-white rounded-lg shadow-sm hover:bg-main" 
-                        >
-                        Preview
-                        </button>
-                      </div>
-                    </div>
-                    {error && (
-                      <div className="flex flex-col gap-2 mt-2 bg-red-100 text-red-600 p-2 rounded-md">
-                        <p className="font-bold">{errorMessage}</p>
-                      </div>
-                    )}
-                    <div className="mb-4 w-full flex mt-2">
-                      <button
-                        className="bg-main hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline justify-self-end"
-                        type='submit'
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-              </form>
             </div>
-          </div>
-        )}
-      </div>
+            <div className="col-span-6">
+                <label htmlFor="Email" className="block text-xs font-medium text-gray-700">
+                Email ( autofilled )
+                </label>
+
+                <input
+                  type="email"
+                  id="Email"
+                  defaultValue={email}
+                  className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                  disabled
+                />
+            </div>
+            <fieldset className="col-span-6">
+                <legend className="block text-sm font-medium text-gray-700">
+                 Phone
+                </legend>
+                <div className="flex -space-x-px">
+                <div className="w-24">
+                  <label htmlFor="countryCode" className="sr-only"> Country Code: </label>
+
+                  <select
+                    id="countryCode"
+                    className="relative w-full rounded-l-md border-gray-200 focus:z-10 sm:text-sm"
+                    >
+                    {
+                        Countries.map((country: { name: string, countryCode: string }, index: number) => {
+                            return <option key={index}>{country.countryCode}</option>
+                        })
+                    }
+                  </select>
+                </div>
+
+                <div className="flex-1">
+                  <label htmlFor="phoneNumber" className="sr-only"> Phone Number </label>
+
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    placeholder="Phone Number"
+                    className="relative w-full rounded-r-md border-gray-200 focus:z-10 sm:text-sm"
+                  />
+                </div>
+              </div>
+                
+            </fieldset>
+            <fieldset className="col-span-6">
+                <legend className="block text-sm font-medium text-gray-700">
+                Address
+                </legend>
+
+                <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
+                <div>
+                    <label htmlFor="houseNumberStreet" className="sr-only">House no. street</label>
+                    <input
+                      type='text' 
+                      className='relative w-full rounded-t-md border-gray-200 focus:z-10 sm:text-sm'
+                      name='houseNumberStreet'
+                      id='houseNumberStreet'
+                      placeholder='House #/ Bldg. # Street'
+                    />
+                </div>
+
+                <div>
+                    <label className="sr-only" htmlFor="barangayCity"> Barangay, City, Province </label>
+
+                    <input
+                      type="text"
+                      id="barangayCity"
+                      placeholder="Barangay, City, Province"
+                      className="relative w-full rounded-b-md border-gray-200 focus:z-10 sm:text-sm"
+                    />
+                </div>
+                </div>
+            </fieldset>
+            <fieldset className="col-span-6">
+                <legend className="block text-sm font-medium text-gray-700">
+                 Country and Postal Code
+                </legend>
+
+                <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
+                <div>
+                    <label htmlFor="Country" className="sr-only">Country</label>
+                    <select
+                    id="Country"
+                    className="relative w-full rounded-t-md border-gray-200 focus:z-10 sm:text-sm"
+                    >
+                    {
+                        Countries.map((country:  { name: string, countryCode: string }, index: number) => {
+                            return <option key={index}>{country.name}</option>
+                        })
+                    }
+                    </select>
+                </div>
+
+                <div>
+                    <label className="sr-only" htmlFor="PostalCode"> ZIP/Post Code </label>
+
+                    <input
+                    type="text"
+                    id="PostalCode"
+                    placeholder="ZIP/Post Code"
+                    className="relative w-full rounded-b-md border-gray-200 focus:z-10 sm:text-sm"
+                    />
+                </div>
+                </div>
+            </fieldset>
+
+            <div className="col-span-6">
+                <button
+                className="block w-full rounded-md bg-black p-2.5 text-sm text-white transition hover:shadow-lg"
+                >
+                Submit now
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
     </div>
+    </section>
   )
 }

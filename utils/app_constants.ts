@@ -23,7 +23,7 @@ export const COLORS = {
 export enum UserTypes {
     STUDENT = 'student',
     VISITOR = 'visitor',
-    PROFESSOR = 'professor'
+    EMPLOYEE = 'employee'
 }
 
 export const CONTAINER_WIDTH = '1090px'

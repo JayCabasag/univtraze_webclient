@@ -1,4 +1,4 @@
-import VerifyAccountContainer from "@/containers/verify-account";
+import VerifyAccountContainer from "@/containers/verify-account/index";
 import { genericPostRequest } from "@/services/genericPostRequest";
 import { decodeJWT } from "@/utils/helpers";
 import { GetServerSideProps } from "next";
