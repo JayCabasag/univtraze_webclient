@@ -7,7 +7,7 @@ import HomeContainer from '../../containers/main/Home'
 import Navbar from '../../containers/main/Navbar'
 import Reports from '../../containers/main/Reports'
 
-export default function MainPage() {
+export default function MainContainer() {
 
   const [scrolled, setScrolled] = useState(false); 
 

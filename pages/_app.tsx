@@ -19,9 +19,9 @@ export default function App({ Component, pageProps }: AppProps) {
         const token = localStorage?.getItem('token') as string
         if(token){
           const decoded = await jwt.decode(token) as jwt.JwtPayload
-          const uid = decoded.result.id
-          const email = decoded.result.email
-          setUserStates(uid, email, token)
+          const uid = decoded?.result?.id as number ?? undefined
+          const email = decoded?.result?.email as string
+          setUserStates(uid, email, token, true)
         }
       }
     }

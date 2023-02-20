@@ -1,6 +1,7 @@
 import VerifyAccountContainer from "@/containers/verify-account/index";
 import { genericPostRequest } from "@/services/genericPostRequest";
 import { decodeJWT } from "@/utils/helpers";
+import cookies from 'cookie'
 import { GetServerSideProps } from "next";
 
 export default function VerififyAccountPage(){
@@ -14,64 +15,59 @@ interface Props {
   }
   
 export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
-    const cookieToken = req.headers.cookie as string;
+    let props = { isAuthorize: false, redirectUrl: '/', response: {} }  
+    const cookie = cookies.parse(req.headers.cookie || '')
+    const token = cookie['token']
 
-    if (!cookieToken){
-       res.writeHead(302, {
+    if(!token){
+      res.writeHead(302, {
         Location: '/'
-       })
-       res.end()
-       return {
-        props: {
-          isAuthorize: true,
-          redirectUrl: '/home',
-          response: {}
-        }
-      }
+      })
+      res.end()
+      props = { isAuthorize: false, redirectUrl: '/', response: {} }
     }
-    const token = cookieToken.substring(6)
+
     const decodedJWT = decodeJWT(token)
     const uid = decodedJWT?.result?.id as string
-    let props = {isAuthorize: false, redirectUrl: '/', response: {}}
 
     await genericPostRequest({
       params: {id: uid},
       path: '/user/getUserDetailsById',
       success: (response) => {
         const isSuccess = response.success === 1
-        if (isSuccess){
+          if (isSuccess){
+            return {
+              props: {
+                isAuthorize: true,
+                redirectUrl: '/verify-account',
+                response: response
+              }
+            } 
+          }
+          res.writeHead(302, {
+            Location: '/'
+          })
+          res.end()
           return {
             props: {
-              isAuthorize: true,
-              redirectUrl: '/verify-account',
+              isAuthorize: false,
+              redirectUrl: '/',
               response: response
             }
           } 
-        }
-        res.writeHead(302, {
-          Location: '/'
-        })
-        res.end()
-        return {
-          props: {
-            isAuthorize: false,
-            redirectUrl: '/',
-            response: response
-          }
-        } 
-      },
+        },
       error: (errorResponse) => {
         return {
           props: {
             isAuthorize: false,
             redirectUrl: '/',
             response: errorResponse
+            }
           }
-        }
-      },
+        },
       token
     })
-  
+    
     return {
       props: props
     }

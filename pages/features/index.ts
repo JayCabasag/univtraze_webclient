@@ -1,3 +1,3 @@
-import FeaturesContainer from "../../containers/features";
+import FeaturesContainer  from '@/containers/features'
 
-export default FeaturesContainer;
+export default FeaturesContainer

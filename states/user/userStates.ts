@@ -6,6 +6,7 @@ type UserStore = {
   uid: undefined | number;
   email: string,
   token: string,
+  isAuthenticated: boolean,
   setUid: (newUid: number) => void,
   setEmail: (email: string) => void,
   setToken: (token: string) => void,
@@ -17,10 +18,12 @@ const userStore = create<UserStore>()(devtools(
       uid: undefined,
       email: '',
       token: '',
+      isAuthenticated: false,
       setUid: (id: number) => set({ uid: id }),
       setEmail: (email: string) => set({ email: email }),
       setToken: (token: string) => set({ token: token}),
-      removeUserDetails: () => set({ uid: undefined, email: '', token: ''})
+      setIsAuthenticated: (value: boolean) => set({ isAuthenticated: value}),
+      removeUserDetails: () => set({ uid: undefined, email: '', token: '', isAuthenticated: false})
     }), {name: 'user-storage'}
   )
 )

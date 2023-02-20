@@ -2,8 +2,7 @@ import { genericPostRequest } from '@/services/genericPostRequest'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import jwt from 'jsonwebtoken'
-import Cookies from 'js-cookie'
-import { setUserStates } from '@/states/user/utils'
+import { setAuthorizationCookie, setUserStates } from '@/states/user/utils'
 import { useRouter } from 'next/router'
 
 export default function LoginPage() {
@@ -49,13 +48,13 @@ export default function LoginPage() {
           const token = response?.token
           const decoded = await jwt.decode(token) as any;
           const email = decoded.result.email
-          const uid = decoded.result.id
+          const uid = decoded?.result?.id
           const type = decoded.result.type
-          Cookies.set('token', token, { expires: 7 });
           localStorage?.setItem("token", token)
           localStorage?.setItem("email", email)
           localStorage?.setItem("uid", uid)
-          setUserStates(uid as number, email, token)
+          setUserStates(uid as number, email, token, true)
+          setAuthorizationCookie(token)
           if (type) {
             return router.push("/home")
           }
