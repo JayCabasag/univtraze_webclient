@@ -26,7 +26,6 @@ export const Genders = [
 ]
 
 export const Ids = [
-    "Select",
     "Driver's License*",
     "Employee's ID / Office Id",
     'e-Card / UMID',

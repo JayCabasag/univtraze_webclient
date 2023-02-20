@@ -2,11 +2,16 @@ import React, { useState } from 'react'
 import userStore from '@/states/user/userStates'
 import { Countries, Genders, Ids } from '@/utils/lists'
 import { useRouter } from 'next/router'
+import moment from 'moment'
 import { UserTypes } from '@/utils/app_constants'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/config/firebase-config'
+import { getTotalYearsFromNow } from '@/utils/helpers'
 
 interface UserDetailsType {
+  uid: number | undefined,
+  type: string,
+  email: string,
   firstname: string
   middlename: string
   lastname: string
@@ -21,8 +26,10 @@ interface UserDetailsType {
   studentId?: string
   course?: string
   yearAndSection?: string
-  professorDepartment: string
-  professorEmployeeId: string 
+  employeeDepartment?: string
+  employeeId?: string
+  visitorSelectedValidId?: string
+  visitorValidIdNumber?: string
 }
 
 
@@ -34,17 +41,75 @@ export default function VerifyAccountContainer() {
   const [selectedUserType, setSelectedUserType] = useState('')
   const [visitorSelectedValidId, setVisitorSelectedValidId] = useState('')
   const [userDetails, setUserDetails] = useState<UserDetailsType>(
-    {firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', addressLineOne: '', addressLineTwo: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',  professorDepartment: '', professorEmployeeId: ''})
+    {uid, type: '', email , firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', addressLineOne: '', addressLineTwo: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',studentId: '', course: '', yearAndSection: '', employeeDepartment: '', employeeId: '', visitorSelectedValidId: '', visitorValidIdNumber: ''})
   const [uploadFrontIdPhotoProgress, setUploadFrontIdPhotoProgress] = useState(0)
   const [uploadBackIdPhotoProgress, setUploadBackIdPhotoProgress] = useState(0)
+  const [hasSelectedAnId, sethasSelectedAnId] = useState(false)
 
   const handleUpdateUserType = (userTypeEvent: React.ChangeEvent<HTMLInputElement>) => {
     const typeText = userTypeEvent?.target?.id as string
     setSelectedUserType(typeText)
+    setUserDetails(prevState => {
+      return {...prevState, type: typeText }
+    })
   }
+
+  const handleUpdateStudentNumber = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const studentNumberValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, studentId: studentNumberValue }
+    })
+  }
+
+  const handleUpdateStudentYearAndSection = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const studentYearAndSectionValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, yearAndSection: studentYearAndSectionValue }
+    })
+  }
+
+  const handleUpdateStudentCourse = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const studentCourseValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, course: studentCourseValue }
+    })
+  }
+
+
+  const handleUpdateEmployeeNumber = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const employeeNumberValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, employeeId: employeeNumberValue}
+    })
+  }
+
+  const handleUpdateEmployeeDepartment = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const employeeDepartmentValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, employeeDepartment: employeeDepartmentValue}
+    })
+  }
+
   const handleUpdateSelectedVisitorValidId = (validIdSelectEvent: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValidIdValue = validIdSelectEvent?.currentTarget?.value
-    setVisitorSelectedValidId(selectedValidIdValue)
+    if(selectedValidIdValue === 'Select'){
+      setVisitorSelectedValidId(selectedValidIdValue)
+      sethasSelectedAnId(false)
+    }
+    if(selectedValidIdValue !== 'Select'){
+      setVisitorSelectedValidId(selectedValidIdValue)
+      sethasSelectedAnId(true)
+      setUserDetails(prevState => {
+        return { ...prevState, visitorSelectedValidId: selectedValidIdValue}
+      })
+    }
+  }
+
+  const handleUpdateSelectedVisitorValidIdNumber = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const validIdNumberValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, visitorValidIdNumber: validIdNumberValue}
+    })
   }
 
   const setEncounteredError = (errorMessageText: string) => {
@@ -149,62 +214,89 @@ export default function VerifyAccountContainer() {
     const suffix = data?.['suffix'] as string
     const dateOfBirth = data?.['dateOfBirth'] as string
     const gender = data?.['gender'] as string
+    const countryCode = data?.['countryCode'] as string
     const mobileNumber = data?.['mobileNumber'] as string
-    const addressLineOne = data?.['addressLineOne'] as string
-    const addressLineTwo = data?.['addressLineTwo'] as string
-    const studentId = data?.['studentId'] as string
-    const studentCourse = data?.['course'] as string
-    const studentYearAndSection = data?.['yearAndSection'] as string
-    const professorDepartment = data?.['professorDepartment'] as string
-    const professorEmployeeId = data?.['professorEmployeeId'] as string
+    const addressLineOne = data?.['houseNumberStreet'] as string
+    const addressLineTwo = data?.['barangayCity'] as string
+    const addressCountry = data?.['country'] as string
+    const addressPostalCode = data?.['postalCode'] as string
 
-    if(firstname === ''){
-      return setEncounteredError('Please add your firstname')
-    }
-    if(middlename === ''){
-      return setEncounteredError('Please add your middlename')
-    }
-    if(lastname === ''){
-      return setEncounteredError('Please add your lastname')
-    }
-    if(gender === ''){
-      return setEncounteredError('Please add your gender')
-    }
-    if(mobileNumber === ''){
-      return setEncounteredError('Please add your mobile number')
-    }
-    if(dateOfBirth === ''){
-      return setEncounteredError('Please add your Date of Birth')
-    }
-    if(addressLineOne === ''){
-      return setEncounteredError('Please add your House No./Lot No./Building No. street, barangay')
-    }
-    if(addressLineTwo === ''){
-      return setEncounteredError('City/Municipality, Province')
-    }
-    if(userDetails?.["frontIdPhotoUrl"] as string === ''){
-      return setEncounteredError('Add back ID photo')
-    }
-    if(userDetails?.["backIdPhotoUrl"] as string === ''){
-      return setEncounteredError('Add back ID photo')
+    if(userDetails.type === ''){
+      return setEncounteredError('Please select a user type')
     }
 
-    if(selectedUserType === UserTypes.STUDENT && studentId === ''){
-      return setEncounteredError('Add back Student Id')
+    if(selectedUserType === UserTypes.STUDENT && userDetails.studentId === ''){
+      return setEncounteredError('Add your student number')
     }
-    if(selectedUserType === UserTypes.STUDENT && studentCourse === ''){
-      return setEncounteredError('Add course')
+    if(selectedUserType === UserTypes.STUDENT && userDetails.course === ''){
+      return setEncounteredError('Add your course')
     }
-    if(selectedUserType === UserTypes.STUDENT && studentYearAndSection === ''){
+    if(selectedUserType === UserTypes.STUDENT && userDetails.yearAndSection === ''){
       return setEncounteredError('Add year and section')
     }
 
-    if(selectedUserType === UserTypes.EMPLOYEE && professorDepartment === ''){
-      return setEncounteredError('Add your faculty/Department')
-    }
-    if(selectedUserType === UserTypes.EMPLOYEE && professorEmployeeId === ''){
+    if(selectedUserType === UserTypes.EMPLOYEE && userDetails.employeeId === ''){
       return setEncounteredError('Add your Employee Id')
     }
+
+    if(selectedUserType === UserTypes.EMPLOYEE && userDetails.employeeDepartment === ''){
+      return setEncounteredError('Add your faculty/Department')
+    }
+    console.log(userDetails.visitorSelectedValidId)
+    if(selectedUserType === UserTypes.VISITOR && userDetails.visitorSelectedValidId === ''){
+      return setEncounteredError('Please select a valid Id')
+    }
+    if(selectedUserType === UserTypes.VISITOR && userDetails.visitorValidIdNumber === ''){
+      return setEncounteredError(`Add your ${visitorSelectedValidId} Number`)
+    }
+
+    if(userDetails.frontIdPhotoUrl === ''){
+      return setEncounteredError('Add front ID photo')
+    }
+    if(userDetails.backIdPhotoUrl === ''){
+      return setEncounteredError('Add back ID photo')
+    }
+
+    if(firstname === ''){
+      return setEncounteredError('Provide your first name')
+    }
+    if(middlename === ''){
+      return setEncounteredError('Provide your middle name')
+    }
+    if(lastname === ''){
+      return setEncounteredError('Provide your last name')
+    }
+    if(dateOfBirth === ''){
+      return setEncounteredError('Provide your date of birth')
+    }
+    if(gender === ''){
+      return setEncounteredError('Provide your gender')
+    }
+    if(mobileNumber === ''){
+      return setEncounteredError('Provide your mobile number')
+    }
+    if(dateOfBirth === ''){
+      return setEncounteredError('Provide your Date of Birth')
+    }
+    
+    const totalYearsOld = getTotalYearsFromNow(dateOfBirth) as number
+    if(totalYearsOld <= 11){
+      return setEncounteredError('User should be atleast 12 years of age.')
+    }
+
+    if(addressLineOne === ''){
+      return setEncounteredError('Provide your House No./Lot No./Building No. street')
+    }
+    if(addressLineTwo === ''){
+      return setEncounteredError('Provide your barangay, City/Municipality, Province')
+    }
+    if(addressCountry === ''){
+      return setEncounteredError('Please select country')
+    }
+    if(addressPostalCode === ''){
+      return setEncounteredError('Provide Postal/Zip Code')
+    }
+   
 
     if(selectedUserType === UserTypes.STUDENT){
       setUserDetails(prevState => {
@@ -216,11 +308,12 @@ export default function VerifyAccountContainer() {
           suffix,
           dateOfBirth,
           gender,
+          mobileNumber: `${countryCode}${mobileNumber}`,
           addressLineOne,
           addressLineTwo,
-          studentId,
-          studentCourse,
-          studentYearAndSection
+          studentId: userDetails.studentId,
+          studentCourse: userDetails.course,
+          studentYearAndSection: userDetails.yearAndSection
         }
       })
     }
@@ -234,10 +327,11 @@ export default function VerifyAccountContainer() {
           suffix,
           dateOfBirth,
           gender,
+          mobileNumber: `${countryCode}${mobileNumber}`,
           addressLineOne,
           addressLineTwo,
-          professorDepartment,
-          professorEmployeeId
+          employeeDepartment: userDetails.employeeDepartment,
+          employeeId: userDetails.employeeId
         }
       })
     }
@@ -251,18 +345,22 @@ export default function VerifyAccountContainer() {
           suffix,
           dateOfBirth,
           gender,
+          mobileNumber: `${countryCode}${mobileNumber}`,
           addressLineOne,
-          addressLineTwo
+          addressLineTwo,
+          visitorSelectedValidId: userDetails.visitorSelectedValidId,
+          visitorValidIdNumber: userDetails.visitorValidIdNumber
         }
       })
     }
 
+    console.log(userDetails)
     setError(false)
     setErrorMessage('')
   }
 
 
-  console.log(userDetails.backIdPhotoUrl, userDetails.frontIdPhotoUrl)
+  console.log(userDetails)
 
   return (
     <section>
@@ -281,7 +379,7 @@ export default function VerifyAccountContainer() {
             </div>
 
             <div>
-            <p className="text-xl font-medium tracking-tight text-gray-900">
+            <p className="text-xl font-medium tracking-tight text-gray-900 mb-2">
                 Please select user type :
             </p>
             <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
@@ -347,36 +445,91 @@ export default function VerifyAccountContainer() {
             <div>
             <div className="flow-root">
                 {UserTypes.STUDENT === selectedUserType && (
-                  <div className='w-1/2'>
-                    <label
-                      htmlFor="studentNumber"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Student No.
-                    </label>
-  
-                    <input
-                      type="text"
-                      id="studentNumber"
-                      className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
-                    />
-                  </div>
+                  <>
+                    <div className='w-full'>
+                      <label
+                        htmlFor="studentNumber"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Student No.
+                      </label>
+    
+                      <input
+                        type="text"
+                        id="studentNumber"
+                        className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateStudentNumber(event)}
+                      />
+                    </div>
+                    <div className='w-full'>
+                      <fieldset className='w-full flex gap-4'>
+                        <div className='flex-1'>
+                          <label
+                            htmlFor="course"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            Course
+                          </label>
+        
+                          <input
+                            type="text"
+                            id="course"
+                            className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateStudentCourse(event)}
+                          />
+                        </div>
+                        <div className='flex-1'>
+                          <label
+                            htmlFor="studentNumber"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            Year and Section
+                          </label>
+        
+                          <input
+                            type="text"
+                            id="yearAndSection"
+                            className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateStudentYearAndSection(event)}
+                          />
+                        </div>
+                      </fieldset>
+                    </div>
+                  </>
                 )}
                 {UserTypes.EMPLOYEE === selectedUserType && (
-                  <div className='w-1/2'>
-                    <label
-                      htmlFor="employeeNumber"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Employee No.
-                    </label>
-  
-                    <input
-                      type="text"
-                      id="employeeNumber"
-                      className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
-                    />
-                  </div>
+                  <>
+                    <div className='w-full'>
+                      <label
+                        htmlFor="employeeNumber"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Employee No.
+                      </label>
+    
+                      <input
+                        type="text"
+                        id="employeeNumber"
+                        className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateEmployeeNumber(event)}
+                      />
+                    </div>
+                    <div className='w-full'>
+                      <label
+                        htmlFor="employeeNumber"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Faculty / Department
+                      </label>
+    
+                      <input
+                        type="text"
+                        id="employeeDepartment"
+                        className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateEmployeeDepartment(event)}
+                      />
+                    </div>
+                  </>
                 )}
                 {UserTypes.VISITOR === selectedUserType && (
                   <div className='w-full'>
@@ -397,12 +550,18 @@ export default function VerifyAccountContainer() {
                       })
                     }
                     </select>
-
+                    <label
+                        htmlFor="employeeNumber"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        {`${visitorSelectedValidId} No.`}
+                      </label>
                     <input
                       type="text"
                       id="validIdNumber"
                       className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
-                      placeholder={`${visitorSelectedValidId} No.`}
+                      disabled={!hasSelectedAnId}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateSelectedVisitorValidIdNumber(event)}
                     />
                   </div>
                 )}
@@ -410,7 +569,7 @@ export default function VerifyAccountContainer() {
             <div className="flex flex-col items-center justify-center w-full mt-6">
                 <legend className="block text-xs font-bold text-main">FRONT ID { uploadFrontIdPhotoProgress > 0 && uploadFrontIdPhotoProgress < 100 && `( uploading...${uploadFrontIdPhotoProgress.toFixed(0)}% )` }</legend>
                 <label htmlFor="dropzone-file-front-id-photo" className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6 overflow-hidden">
                         { userDetails.frontIdPhotoUrl !== '' ?
                          <img 
                             src={userDetails.frontIdPhotoUrl}
@@ -433,7 +592,7 @@ export default function VerifyAccountContainer() {
             <div className="flex items-center justify-center w-full mt-6 flex-col">
                 <legend className="block text-xs font-bold text-main">BACK ID { uploadBackIdPhotoProgress > 0 && uploadBackIdPhotoProgress < 100 && `( uploading...${uploadBackIdPhotoProgress.toFixed(0)}% )` } </legend>
                 <label htmlFor="dropzone-file-back-id-photo" className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6 overflow-hidden">
                         { userDetails.backIdPhotoUrl !== '' ?
                           <img 
                             src={userDetails.backIdPhotoUrl}
@@ -460,10 +619,10 @@ export default function VerifyAccountContainer() {
 
         <div className="bg-white py-12 md:py-24">
         <div className="mx-auto max-w-lg px-4 lg:px-8">
-            <form className="grid grid-cols-6 gap-4">
+            <form className="grid grid-cols-6 gap-4" onSubmit={handleSubmit}>
             <div className="col-span-3">
                 <label
-                  htmlFor="FirstName"
+                  htmlFor="firstName"
                   className="block text-xs font-medium text-gray-700"
                 >
                 First Name
@@ -471,7 +630,8 @@ export default function VerifyAccountContainer() {
 
                 <input
                   type="text"
-                  id="FirstName"
+                  id="firstName"
+                  name='firstName'
                   className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                 />
             </div>
@@ -486,12 +646,13 @@ export default function VerifyAccountContainer() {
                 <input
                 type="text"
                 id="middleName"
+                name='middleName'
                 className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                 />
             </div>
             <div className="col-span-5">
                 <label
-                htmlFor="LastName"
+                htmlFor="lastName"
                 className="block text-xs font-medium text-gray-700"
                 >
                 Last Name
@@ -499,7 +660,8 @@ export default function VerifyAccountContainer() {
 
                 <input
                 type="text"
-                id="LastName"
+                id="lastName"
+                name='lastName'
                 className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                 />
             </div>
@@ -514,17 +676,19 @@ export default function VerifyAccountContainer() {
                 <input
                   type="text"
                   id="suffix"
+                  name='suffix'
                   className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                 />
             </div>
             <div className="col-span-4">
-                <label htmlFor="Email" className="block text-xs font-medium text-gray-700">
+                <label htmlFor="dateOfBirth" className="block text-xs font-medium text-gray-700">
                   Date of Birth
                 </label>
 
                 <input
                   type="date"
-                  id="dob"
+                  id="dateOfBirth"
+                  name='dateOfBirth'
                   className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                 />
             </div>
@@ -533,7 +697,8 @@ export default function VerifyAccountContainer() {
                   Gender
                 </label>
                 <select
-                  id="Country"
+                  id="gender"
+                  name='gender'
                   className="mt-1 relative w-full rounded border-gray-200 focus:z-10 sm:text-sm"
                 >
                  {
@@ -544,13 +709,14 @@ export default function VerifyAccountContainer() {
                 </select>
             </div>
             <div className="col-span-6">
-                <label htmlFor="Email" className="block text-xs font-medium text-gray-700">
+                <label htmlFor="email" className="block text-xs font-medium text-gray-700">
                 Email ( autofilled )
                 </label>
 
                 <input
                   type="email"
-                  id="Email"
+                  id="email"
+                  name='email'
                   defaultValue={email}
                   className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                   disabled
@@ -567,6 +733,7 @@ export default function VerifyAccountContainer() {
                   <select
                     id="countryCode"
                     className="relative w-full rounded-l-md border-gray-200 focus:z-10 sm:text-sm"
+                    name='countryCode'
                     >
                     {
                         Countries.map((country: { name: string, countryCode: string }, index: number) => {
@@ -577,12 +744,13 @@ export default function VerifyAccountContainer() {
                 </div>
 
                 <div className="flex-1">
-                  <label htmlFor="phoneNumber" className="sr-only"> Phone Number </label>
+                  <label htmlFor="mobileNumber" className="sr-only"> Phone Number </label>
 
                   <input
                     type="text"
-                    id="phoneNumber"
+                    id="mobileNumber"
                     placeholder="Phone Number"
+                    name='mobileNumber'
                     className="relative w-full rounded-r-md border-gray-200 focus:z-10 sm:text-sm"
                   />
                 </div>
@@ -612,6 +780,7 @@ export default function VerifyAccountContainer() {
                     <input
                       type="text"
                       id="barangayCity"
+                      name='barangayCity'
                       placeholder="Barangay, City, Province"
                       className="relative w-full rounded-b-md border-gray-200 focus:z-10 sm:text-sm"
                     />
@@ -628,6 +797,7 @@ export default function VerifyAccountContainer() {
                     <label htmlFor="Country" className="sr-only">Country</label>
                     <select
                     id="Country"
+                    name='country'
                     className="relative w-full rounded-t-md border-gray-200 focus:z-10 sm:text-sm"
                     >
                     {
@@ -639,21 +809,26 @@ export default function VerifyAccountContainer() {
                 </div>
 
                 <div>
-                    <label className="sr-only" htmlFor="PostalCode"> ZIP/Post Code </label>
+                    <label className="sr-only" htmlFor="postalCode"> ZIP/Post Code </label>
 
                     <input
                     type="text"
-                    id="PostalCode"
+                    id="postalCode"
                     placeholder="ZIP/Post Code"
+                    name='postalCode'
                     className="relative w-full rounded-b-md border-gray-200 focus:z-10 sm:text-sm"
                     />
                 </div>
                 </div>
             </fieldset>
-
+            {error && (
+              <div className="col-span-6">
+                <p className='text-red-500'>{errorMessage}</p>
+              </div>
+            )}
             <div className="col-span-6">
                 <button
-                className="block w-full rounded-md bg-black p-2.5 text-sm text-white transition hover:shadow-lg"
+                  className="block w-full rounded-md bg-black p-2.5 text-sm text-white transition hover:shadow-lg"
                 >
                 Submit now
                 </button>

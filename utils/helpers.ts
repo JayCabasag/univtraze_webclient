@@ -1,4 +1,5 @@
 import jwt, { Secret } from "jsonwebtoken";
+import moment from 'moment'
 
 export function isEmailValid(email: string) {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -18,4 +19,11 @@ export function decodeJWT(token: string){
     decoded = {message: 'unable to decode token'}
   }
   return decoded
+}
+
+export function getTotalYearsFromNow(dateValue: string){
+  const now = moment();
+  const date = moment(dateValue);
+  const years = now.diff(date, 'years');
+  return years
 }
