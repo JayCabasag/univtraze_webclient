@@ -29,6 +29,6 @@ export default function LogoutPage() {
   }, [])
   
   return (
-    <>{isLogginOut ? <> Please wait... logging out. </> : <LogoutContainer />}</>
+    <LogoutContainer />
   )
 }

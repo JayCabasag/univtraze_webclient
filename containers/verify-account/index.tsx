@@ -3,10 +3,11 @@ import userStore from '@/states/user/userStates'
 import { Countries, Genders, Ids } from '@/utils/lists'
 import { useRouter } from 'next/router'
 import moment from 'moment'
-import { UserTypes } from '@/utils/app_constants'
+import { IMAGES, UserTypes } from '@/utils/app_constants'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/config/firebase-config'
 import { getTotalYearsFromNow } from '@/utils/helpers'
+import { genericPostRequest } from '@/services/genericPostRequest'
 
 interface UserDetailsType {
   uid: number | undefined,
@@ -19,8 +20,7 @@ interface UserDetailsType {
   dateOfBirth: string
   gender: string
   mobileNumber: string
-  addressLineOne: string
-  addressLineTwo: string
+  address: string
   backIdPhotoUrl: string
   frontIdPhotoUrl: string
   studentId?: string
@@ -34,14 +34,16 @@ interface UserDetailsType {
 
 
 export default function VerifyAccountContainer() {
-  const { email, uid } = userStore(state => state)
+  const router = useRouter()
+  const { email, uid, token } = userStore(state => state)
   const firebaseStoragePath = `ids/${uid}/`
   const [error, setError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [isFetching, setIsFetching] = useState(false)
   const [selectedUserType, setSelectedUserType] = useState('')
   const [visitorSelectedValidId, setVisitorSelectedValidId] = useState('')
   const [userDetails, setUserDetails] = useState<UserDetailsType>(
-    {uid, type: '', email , firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', addressLineOne: '', addressLineTwo: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',studentId: '', course: '', yearAndSection: '', employeeDepartment: '', employeeId: '', visitorSelectedValidId: '', visitorValidIdNumber: ''})
+    {uid, type: '', email , firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', address: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',studentId: '', course: '', yearAndSection: '', employeeDepartment: '', employeeId: '', visitorSelectedValidId: '', visitorValidIdNumber: ''})
   const [uploadFrontIdPhotoProgress, setUploadFrontIdPhotoProgress] = useState(0)
   const [uploadBackIdPhotoProgress, setUploadBackIdPhotoProgress] = useState(0)
   const [hasSelectedAnId, sethasSelectedAnId] = useState(false)
@@ -220,6 +222,7 @@ export default function VerifyAccountContainer() {
     const addressLineTwo = data?.['barangayCity'] as string
     const addressCountry = data?.['country'] as string
     const addressPostalCode = data?.['postalCode'] as string
+    const completeAddress = `${addressLineOne}, ${addressLineTwo}, ${addressCountry}-${addressPostalCode}`
 
     if(userDetails.type === ''){
       return setEncounteredError('Please select a user type')
@@ -242,7 +245,7 @@ export default function VerifyAccountContainer() {
     if(selectedUserType === UserTypes.EMPLOYEE && userDetails.employeeDepartment === ''){
       return setEncounteredError('Add your faculty/Department')
     }
-    console.log(userDetails.visitorSelectedValidId)
+
     if(selectedUserType === UserTypes.VISITOR && userDetails.visitorSelectedValidId === ''){
       return setEncounteredError('Please select a valid Id')
     }
@@ -278,7 +281,6 @@ export default function VerifyAccountContainer() {
     if(dateOfBirth === ''){
       return setEncounteredError('Provide your Date of Birth')
     }
-    
     const totalYearsOld = getTotalYearsFromNow(dateOfBirth) as number
     if(totalYearsOld <= 11){
       return setEncounteredError('User should be atleast 12 years of age.')
@@ -296,12 +298,10 @@ export default function VerifyAccountContainer() {
     if(addressPostalCode === ''){
       return setEncounteredError('Provide Postal/Zip Code')
     }
-   
 
     if(selectedUserType === UserTypes.STUDENT){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
+      const updatedUserDetails = {
+          ...userDetails,
           firstname,
           middlename,
           lastname,
@@ -309,18 +309,15 @@ export default function VerifyAccountContainer() {
           dateOfBirth,
           gender,
           mobileNumber: `${countryCode}${mobileNumber}`,
-          addressLineOne,
-          addressLineTwo,
+          address: completeAddress,
           studentId: userDetails.studentId,
           studentCourse: userDetails.course,
           studentYearAndSection: userDetails.yearAndSection
         }
-      })
+      addStudentDetails(updatedUserDetails)
     }
     if(selectedUserType === UserTypes.EMPLOYEE){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
+      const updatedUserDetails = {...userDetails,
           firstname,
           middlename,
           lastname,
@@ -328,17 +325,14 @@ export default function VerifyAccountContainer() {
           dateOfBirth,
           gender,
           mobileNumber: `${countryCode}${mobileNumber}`,
-          addressLineOne,
-          addressLineTwo,
+          address: completeAddress,
           employeeDepartment: userDetails.employeeDepartment,
           employeeId: userDetails.employeeId
-        }
-      })
+      }
+      addEmployeeDetails(updatedUserDetails)
     }
     if(selectedUserType === UserTypes.VISITOR){
-      setUserDetails(prevState => {
-        return {
-          ...prevState,
+      const updatedUserDetails = {...userDetails,
           firstname,
           middlename,
           lastname,
@@ -346,21 +340,162 @@ export default function VerifyAccountContainer() {
           dateOfBirth,
           gender,
           mobileNumber: `${countryCode}${mobileNumber}`,
-          addressLineOne,
-          addressLineTwo,
+          address: completeAddress,
           visitorSelectedValidId: userDetails.visitorSelectedValidId,
           visitorValidIdNumber: userDetails.visitorValidIdNumber
-        }
-      })
+      }
+      addEVisitorDetails(updatedUserDetails)
     }
-
-    console.log(userDetails)
     setError(false)
     setErrorMessage('')
   }
 
+  const addStudentDetails = async (updatedUserDetails: UserDetailsType) => {
+    setIsFetching(true)
+		const payload = {
+			user_id: uid, 
+			firstname: updatedUserDetails.firstname, 
+			lastname: updatedUserDetails.lastname, 
+			middlename: updatedUserDetails.middlename, 
+			suffix: updatedUserDetails.suffix, 
+			gender: updatedUserDetails.gender, 
+			address: updatedUserDetails.address, 
+			birthday: updatedUserDetails.dateOfBirth, 
+			course: updatedUserDetails.course, 
+			year_section: updatedUserDetails.yearAndSection, 
+			student_id: updatedUserDetails.studentId, 
+			mobile_number: updatedUserDetails.mobileNumber, 
+			email: email, 
+			profile_url: IMAGES.DEFAULT_PROFILE_PHOTO, 
+			back_id_photo: updatedUserDetails.backIdPhotoUrl, 
+			front_id_photo: updatedUserDetails.frontIdPhotoUrl
+		}
 
-  console.log(userDetails)
+		await genericPostRequest({
+      params: payload,
+      path: '/user/addStudentDetails',
+      success: (response) => {
+        if(response.success === 1){
+          updateUserType()
+        }
+        if(response.success === 0){
+          setEncounteredError(response?.message as string)
+        }
+        setIsFetching(false)
+      },
+      error: (error) => {
+        console.log(error)
+        setIsFetching(false)
+      },
+      token
+    })		
+	}
+
+	const addEmployeeDetails = async (updatedUserDetails: UserDetailsType) => {
+    setIsFetching(true)
+		const payload = {
+			user_id: uid, 
+			firstname: updatedUserDetails.firstname, 
+			lastname: updatedUserDetails.lastname, 
+			middlename: updatedUserDetails.middlename, 
+			suffix: updatedUserDetails.suffix, 
+			gender: updatedUserDetails.gender, 
+			address: updatedUserDetails.address, 
+			birthday: updatedUserDetails.dateOfBirth,
+      position: updatedUserDetails.employeeDepartment,
+			employee_id: updatedUserDetails.employeeId, 
+			mobile_number: updatedUserDetails.mobileNumber, 
+			email: email, 
+			profile_url: IMAGES.DEFAULT_PROFILE_PHOTO, 
+			back_id_photo: updatedUserDetails.backIdPhotoUrl, 
+			front_id_photo: updatedUserDetails.frontIdPhotoUrl
+		}
+
+    await genericPostRequest({
+      params: payload,
+      path: '/user/addEmployeeDetails',
+      success: (response) => {
+        if(response.success === 1){
+          updateUserType()
+        }
+        if(response.success === 0){
+          setEncounteredError(response?.message as string)
+        }
+        setIsFetching(false)
+      },
+      error: (error) => {
+        console.log(error)
+        setIsFetching(false)
+      },
+      token
+    })		
+	}
+
+	const addEVisitorDetails = async (updatedUserDetails: UserDetailsType) => {
+    setIsFetching(true)
+		const payload = {
+			user_id: uid, 
+			firstname: updatedUserDetails.firstname, 
+			lastname: updatedUserDetails.lastname, 
+			middlename: updatedUserDetails.middlename, 
+			suffix: updatedUserDetails.suffix, 
+			gender: updatedUserDetails.gender, 
+			address: updatedUserDetails.address, 
+			birthday: updatedUserDetails.dateOfBirth, 
+			mobile_number: updatedUserDetails.mobileNumber, 
+			email: email, 
+			profile_url: IMAGES.DEFAULT_PROFILE_PHOTO, 
+			back_id_photo: updatedUserDetails.backIdPhotoUrl, 
+			front_id_photo: updatedUserDetails.frontIdPhotoUrl
+		}
+    
+    await genericPostRequest({
+      params: payload,
+      path: '/user/addVisitorDetails',
+      success: (response) => {
+        if(response.success === 1){
+          updateUserType()
+        }
+        if(response.success === 0){
+          setEncounteredError(response?.message as string)
+        }
+        setIsFetching(false)
+      },
+      error: (error) => {
+        console.log(error)
+        setIsFetching(false)
+      },
+      token
+    })		
+	}
+
+  const updateUserType = async () => {
+		const payload = {
+				id: uid,
+				type: userDetails?.type as string
+		}
+
+		await genericPostRequest({
+      params: payload,
+      path: '/user/updateUserType',
+      success: (response) => {
+        console.log(response)
+        if(response.success === 1){
+          router.push(`/account-created`)
+        }
+        if(response.data.success === 0){
+          setEncounteredError(response?.message as string)
+        }
+        setIsFetching(false)
+      },
+      error: (error) => {
+        console.log(error)
+        setIsFetching(false)
+      },
+      token
+    })
+	}
+
 
   return (
     <section>
@@ -829,8 +964,9 @@ export default function VerifyAccountContainer() {
             <div className="col-span-6">
                 <button
                   className="block w-full rounded-md bg-black p-2.5 text-sm text-white transition hover:shadow-lg"
+                  disabled={isFetching}
                 >
-                Submit now
+                  { isFetching ? 'Please wait...' : 'Submit now'}
                 </button>
             </div>
             </form>

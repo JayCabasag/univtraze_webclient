@@ -35,11 +35,25 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
       path: '/user/getUserDetailsById',
       success: (response) => {
         const isSuccess = response.success === 1
-          if (isSuccess){
+        const type = response?.type as string ?? ''
+          if (isSuccess && type === ''){
             return {
               props: {
                 isAuthorize: true,
                 redirectUrl: '/verify-account',
+                response: response
+              }
+            } 
+          }
+          if (isSuccess && type !== ''){
+            res.writeHead(302, {
+              Location: '/home'
+            })
+            res.end()
+            return {
+              props: {
+                isAuthorize: true,
+                redirectUrl: '/home',
                 response: response
               }
             } 
