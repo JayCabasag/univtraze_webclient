@@ -64,7 +64,6 @@ export default function RegisterContainer() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       }
     })

@@ -13,8 +13,6 @@ export default function LoginPage() {
   const [isFetching, setIsFetching] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-  console.log(showPassword)
-
   //methods
   const handleShowPassword = () => {
     setShowPassword(prevState => !prevState)
@@ -53,7 +51,7 @@ export default function LoginPage() {
           localStorage?.setItem("token", token)
           localStorage?.setItem("email", email)
           localStorage?.setItem("uid", uid)
-          setUserStates(uid as number, email, token, true)
+          setUserStates(uid as number, email, token, type, true)
           setAuthorizationCookie(token)
           if (type) {
             return router.push("/home")
@@ -103,7 +101,7 @@ export default function LoginPage() {
                           <input
                             type="email"
                             id="email"
-                            className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                            className="w-full rounded-lg border-gray-200 py-3 px-4 pr-12 text-sm shadow-sm"
                             placeholder="Enter email"
                           />
 
@@ -134,7 +132,7 @@ export default function LoginPage() {
                             type={showPassword ? 'text' : 'password'}
                             id={"password"}
                             name='password'
-                            className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                            className="w-full rounded-lg border-gray-200 py-3 px-4 pr-12 text-sm shadow-sm"
                             placeholder="Enter password"
                           />
 

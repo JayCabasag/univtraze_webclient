@@ -73,7 +73,6 @@ export default function SignUpPage() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       }
     })
@@ -114,7 +113,7 @@ export default function SignUpPage() {
                             type="email"
                             id="email"
                             name='email'
-                            className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                            className="w-full rounded-lg border-gray-200 py-3 px-4 pr-12 text-sm shadow-sm"
                             placeholder="Enter email"
                           />
 
@@ -145,7 +144,7 @@ export default function SignUpPage() {
                             type={showPassword ? 'text' : 'password'}
                             id="password"
                             name='password'
-                            className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                            className="w-full rounded-lg border-gray-200 py-3 px-4 pr-12 text-sm shadow-sm"
                             placeholder="Enter password"
                           />
 
@@ -193,7 +192,7 @@ export default function SignUpPage() {
                             type={showConfirmPassword ? 'text' : 'password'}
                             id="passwordConfirm"
                             name='passwordConfirm'
-                            className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                            className="w-full rounded-lg border-gray-200 py-3 px-4 pr-12 text-sm shadow-sm"
                             placeholder="Confirm password"
                           />
 

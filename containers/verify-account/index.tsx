@@ -152,7 +152,6 @@ export default function VerifyAccountContainer() {
                  }, 
                  () => {
                      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                      console.log(downloadURL)
                       setUserDetails(prevState => {
                         return {...prevState, frontIdPhotoUrl: downloadURL as string}
                       })
@@ -195,7 +194,6 @@ export default function VerifyAccountContainer() {
                  }, 
                  () => {
                      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                      console.log(downloadURL)
                       setUserDetails(prevState => {
                         return {...prevState, backIdPhotoUrl: downloadURL as string}
                       })
@@ -384,7 +382,6 @@ export default function VerifyAccountContainer() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       },
       token
@@ -424,7 +421,6 @@ export default function VerifyAccountContainer() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       },
       token
@@ -462,7 +458,6 @@ export default function VerifyAccountContainer() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       },
       token
@@ -479,7 +474,6 @@ export default function VerifyAccountContainer() {
       params: payload,
       path: '/user/updateUserType',
       success: (response) => {
-        console.log(response)
         if(response.success === 1){
           router.push(`/account-created`)
         }
@@ -489,7 +483,6 @@ export default function VerifyAccountContainer() {
         setIsFetching(false)
       },
       error: (error) => {
-        console.log(error)
         setIsFetching(false)
       },
       token
