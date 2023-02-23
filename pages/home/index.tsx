@@ -4,10 +4,15 @@ import { decodeJWT } from '@/utils/helpers'
 import cookies from 'cookie'
 import { GetServerSideProps } from 'next'
 import React, { ReactNode } from 'react'
+import SubPage from './[sub-pages]'
 
 
-export default function HomePage({response, redirectUrl, isAuthorized, children}: {response: any, redirectUrl: string, isAuthorized: boolean, children: ReactNode}) {
-  return <HomeContainer response={response} redirectUrl={redirectUrl} isAuthorized={isAuthorized} children={children}/>
+export default function HomePage({response, redirectUrl, isAuthorized }: {response: any, redirectUrl: string, isAuthorized: boolean}) {
+  return (
+    <HomeContainer response={response} redirectUrl={redirectUrl} isAuthorized={isAuthorized}>
+      Dashboard
+    </HomeContainer>
+  )
 }
 
 interface Props {

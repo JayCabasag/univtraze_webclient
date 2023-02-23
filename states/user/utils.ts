@@ -6,5 +6,6 @@ export const setUserStates = (uid: number, email: string, token: string, isAuthe
 }
 
 export const setAuthorizationCookie = (token: string) => {
-    Cookies.set('token', token)
-}
+    const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Set expiration time to 7 days from now
+    Cookies.set('token', token, { expires: expirationDate })
+  }
