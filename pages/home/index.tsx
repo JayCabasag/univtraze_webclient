@@ -3,11 +3,11 @@ import { genericPostRequest } from '@/services/genericPostRequest'
 import { decodeJWT } from '@/utils/helpers'
 import cookies from 'cookie'
 import { GetServerSideProps } from 'next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 
-export default function HomePage({response, redirectUrl, isAuthorized}: {response: any, redirectUrl: string, isAuthorized: boolean}) {
-  return <HomeContainer response={response} redirectUrl={redirectUrl} isAuthorized={isAuthorized} />
+export default function HomePage({response, redirectUrl, isAuthorized, children}: {response: any, redirectUrl: string, isAuthorized: boolean, children: ReactNode}) {
+  return <HomeContainer response={response} redirectUrl={redirectUrl} isAuthorized={isAuthorized} children={children}/>
 }
 
 interface Props {

@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { IMAGES } from '@/utils/app_constants';
 import BreadCrumb from '@/components/bread-crumb/BreadCrumb';
 
-export default function HomeContainer({ children }: {children: ReactNode}) {
+export default function HomeContainer({response, redirectUrl, isAuthorized, children }: {response: any, redirectUrl: string, isAuthorized: boolean, children: ReactNode}) {
   const router = useRouter()
   const { email  } = userStore()
   const [isShowSidebar, setIsShowSidebar] = useState(false)

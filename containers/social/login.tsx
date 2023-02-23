@@ -51,7 +51,7 @@ export default function LoginPage() {
           localStorage?.setItem("token", token)
           localStorage?.setItem("email", email)
           localStorage?.setItem("uid", uid)
-          setUserStates(uid as number, email, token, type, true)
+          setUserStates(uid as number, email, token, true)
           setAuthorizationCookie(token)
           if (type) {
             return router.push("/home")
