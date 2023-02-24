@@ -13,7 +13,6 @@ module.exports = {
       colors: {
         main: '#000a47',
         secondary: '#001a93',
-        blue: '#1fb6ff',
         purple: '#7e5bef',
         pink: '#ff49db',
         orange: '#ff7849',
@@ -29,9 +28,6 @@ module.exports = {
           900: '#002233',
         },
         yellow: '#ffc82c',
-        'gray-dark': '#273444',
-        gray: '#8492a6',
-        'gray-light': '#d3dce6',
         black: '#0a1929',
       },
       fontFamily: { sans: ['Brown', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'] },

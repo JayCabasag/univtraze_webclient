@@ -3,7 +3,7 @@ import React from 'react'
 export default function CovidUpdates() {
   return (
     <div className="w-full md:max-w-2xl p-4 bg-white rounded-lg flex flex-col gap-2 md:gap-4">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
             <h5 className="text-xl font-bold leading-none text-main dark:text-white">Covid updates</h5>
       </div>
         <article className="flex flex-col gap-4 rounded-lg bg-white p-6 shadow">

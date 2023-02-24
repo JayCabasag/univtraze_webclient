@@ -75,7 +75,7 @@ export default function LoginPage() {
     <main className='flex flex-col h-screen w-screen'>
         <div className='text-main font-bold text-2xl mt-4 ml-4  md:mt-11 md:ml-12 h-12'><Link href={'/'}>Univtraze</Link></div>
         <div 
-          className='flex w-full max-w-max-xl self-center flex-col md:flex-row mt-10 md:mt-32 transition-all p-4'
+          className='flex w-full max-w-max-xl self-center flex-col md:flex-row mt-10  xl:mt-16  md:mt-32 transition-all p-4'
         > 
             <div className='flex-1'>
                 <h1 

@@ -39,7 +39,7 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
             <div className="flex items-center">
                 <div className="flex items-center ml-3">
                   <div>
-                    <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-1 focus:ring-main dark:focus:ring-main" aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                    <button type="button" className="flex text-sm rounded-full focus:ring-1 focus:ring-main dark:focus:ring-main" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                       <span className="sr-only">Open user menu</span>
                       <img className="w-8 h-8 rounded-full" src={IMAGES.DEFAULT_PROFILE_PHOTO} alt="user photo" />
                     </button>
@@ -143,7 +143,7 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
             </div>
         </div>
       </div>
-      {isShowSidebar && <div drawer-backdrop="true" onClick={handleToggleSidebar} className="bg-main bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-30 h-full w-full block md:hidden" role='dialog'></div>}
+      {isShowSidebar && <div drawer-backdrop="true" onClick={handleToggleSidebar} className="bg-main bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-20 h-full w-full block md:hidden" role='dialog'></div>}
     </section>
   )
 }
