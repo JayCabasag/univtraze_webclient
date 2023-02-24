@@ -8,11 +8,11 @@ import jwt from 'jsonwebtoken';
 import { setUserStates } from '@/states/user/utils';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import userStore from '@/states/user/userStates';
 
 Modal.setAppElement('#__next')
 
 export default function App({ Component, pageProps }: AppProps) {
-
   useEffect(() => {
     const populateToken = async () => {
       if(window !== undefined){

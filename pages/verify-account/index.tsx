@@ -20,11 +20,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
     const token = cookie['token']
 
     if(!token){
-      res.writeHead(302, {
-        Location: '/'
-      })
-      res.end()
-      props = { isAuthorize: false, redirectUrl: '/', response: {} }
+      return {
+        redirect: {
+          destination: '/',
+          permanent: true
+        }
+      }
     }
 
     const decodedJWT = decodeJWT(token)
@@ -38,47 +39,35 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
         const type = response?.type as string ?? ''
           if (isSuccess && type === ''){
             return {
-              props: {
-                isAuthorize: true,
-                redirectUrl: '/verify-account',
-                response: response
+              redirects: {
+                destination: '/verify-account',
+                permanent: true
               }
             } 
           }
           if (isSuccess && type !== ''){
-            res.writeHead(302, {
-              Location: '/home'
-            })
-            res.end()
             return {
-              props: {
-                isAuthorize: true,
-                redirectUrl: '/home',
-                response: response
+              redirects: {
+                destination: '/home',
+                permanent: true
               }
             } 
           }
-          res.writeHead(302, {
-            Location: '/'
-          })
-          res.end()
           return {
-            props: {
-              isAuthorize: false,
-              redirectUrl: '/',
-              response: response
+            redirects: {
+              destination: '/',
+              permanent: true
             }
           } 
         },
       error: (errorResponse) => {
         return {
-          props: {
-            isAuthorize: false,
-            redirectUrl: '/',
-            response: errorResponse
-            }
+          redirects: {
+            destination: '/',
+            permanent: true
           }
-        },
+        } 
+      },
       token
     })
     

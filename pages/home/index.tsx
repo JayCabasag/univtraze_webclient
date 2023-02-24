@@ -4,13 +4,12 @@ import { decodeJWT } from '@/utils/helpers'
 import cookies from 'cookie'
 import { GetServerSideProps } from 'next'
 import React, { ReactNode } from 'react'
-import SubPage from './[sub-pages]'
+import DashboardPage from './[sub-pages]/dashboard'
 
-
-export default function HomePage({response, redirectUrl, isAuthorized }: {response: any, redirectUrl: string, isAuthorized: boolean}) {
+export default function HomePage() {
   return (
-    <HomeContainer response={response} redirectUrl={redirectUrl} isAuthorized={isAuthorized}>
-      Dashboard
+    <HomeContainer>
+      <DashboardPage />
     </HomeContainer>
   )
 }
@@ -22,17 +21,17 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
-  
-  let props = { isAuthorize: false, redirectUrl: '/', response: {} }  
+  let props = { isAuthorize: false, redirectUrl: '/', response: {}}  
   const cookie = cookies.parse(req.headers.cookie || '')
   const token = cookie['token']
 
   if(!token){
-    res.writeHead(302, {
-      Location: '/'
-    })
-    res.end()
-    props = { isAuthorize: false, redirectUrl: '/', response: {} }
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
   }
 
   const decodedJWT = decodeJWT(token)
@@ -45,48 +44,36 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
         const isSuccess = response.success === 1
         const type = response?.type as string ?? ''
           if (isSuccess && type === ''){
-            res.writeHead(302, {
-              Location: '/verify-account'
-            })
-            res.end()
             return {
-              props: {
-                isAuthorize: true,
-                redirectUrl: '/verify-account',
-                response: response
-              }
-            } 
+              redirect: {
+                destination: '/verify-account',
+                permanent: false,
+              },
+            }
           }
           if (isSuccess && type !== ''){
             return {
-              props: {
-                isAuthorize: true,
-                redirectUrl: '/home',
-                response: response
-              }
-            } 
-          }
-          res.writeHead(302, {
-            Location: '/'
-          })
-          res.end()
-          return {
-            props: {
-              isAuthorize: false,
-              redirectUrl: '/',
-              response: response
+              redirect: {
+                destination: '/home',
+                permanent: false,
+              },
             }
-          } 
+          }
+          return {
+            redirect: {
+              destination: '/',
+              permanent: false,
+            },
+          }
         },
       error: (errorResponse) => {
         return {
-          props: {
-            isAuthorize: false,
-            redirectUrl: '/',
-            response: errorResponse
-            }
-          }
-        },
+          redirect: {
+            destination: '/',
+            permanent: false,
+          },
+        }
+      },
       token
     })
     

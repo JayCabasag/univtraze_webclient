@@ -24,7 +24,7 @@ const userStore = create<UserStore>()(devtools(
       token: '',
       type: '',
       isAuthenticated: false,
-      isLoading: true,
+      isLoading: false,
       setUid: (id: number) => set({ uid: id }),
       setEmail: (email: string) => set({ email: email }),
       setToken: (token: string) => set({ token: token }),
