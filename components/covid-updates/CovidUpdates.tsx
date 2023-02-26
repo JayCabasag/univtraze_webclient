@@ -47,7 +47,7 @@ export default function CovidUpdates() {
   }, [updatedAt, activeCases, country, totalDeaths, totalRecovered])
   
   return (
-    <div className="w-full md:max-w-2xl p-4 bg-white rounded-lg flex flex-col gap-2 md:gap-4">
+    <div className="w-full md:max-w-2xl p-2 md:p-4 bg-white rounded-lg flex flex-col gap-2 md:gap-4">
       <div className="flex items-center justify-between">
         <h5 className="text-xl font-bold leading-none text-main dark:text-white">Covid updates ({country})</h5>
       </div>

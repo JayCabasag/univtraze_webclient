@@ -32,9 +32,9 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
                     <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                   </svg>
               </button>
-              <a href="univtraze.net" className="flex ml-2 md:mr-24">
+              <Link href="/" className="flex ml-2 md:mr-24">
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Univtraze</span>
-              </a>
+              </Link>
             </div>
             <div className="flex items-center">
                 <div className="flex items-center ml-3">
@@ -55,16 +55,16 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
                     </div>
                     <ul className="py-1" role="none">
                       <li>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
+                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</Link>
                       </li>
                       <li>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
+                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</Link>
                       </li>
                       <li>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
+                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</Link>
                       </li>
                       <li>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</Link>
                       </li>
                     </ul>
                   </div>
@@ -136,7 +136,7 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
 
       <div className="p-4 md:ml-64 mt-16">
         <BreadCrumb />
-        <div className='py-4 flex flex-col md:flex-row'>
+        <div className='py-4 flex flex-col md:flex-row gap-2 md:gap-0 '>
             { children }
             <div className='w-full'>
               <CovidUpdates />
