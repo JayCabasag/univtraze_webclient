@@ -27,7 +27,6 @@ module.exports = {
           800: '#004366',
           900: '#002233',
         },
-        yellow: '#ffc82c',
         black: '#0a1929',
       },
       fontFamily: { sans: ['Brown', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'] },
