@@ -1,3 +1,5 @@
+import { CovidCaseType } from "./types"
+
 export const IMAGES = {
     UNIVTRAZE_LOGO_WITH_TEXT: '/assets/logoWithText.png',
     CLOSE_ICON: '/assets/closeIcon.svg',
@@ -30,3 +32,16 @@ export enum UserTypes {
 export const CONTAINER_WIDTH = '1090px'
 
 export const UserTypeList = Object.values(UserTypes)
+
+export const formattedCovidCasesList = (allCases: any[]) => {
+    if(allCases?.length <= 0) return [] as CovidCaseType[]
+    
+    const allCasesList = Object.entries(allCases)?.map(([key, value]) => {
+        const splittedData = key.split("/")
+        const month = splittedData[0]
+        const year = splittedData[2]
+        return { date: `${month}-${year}`, totalCase: value }
+    }) as CovidCaseType[]
+
+    return allCasesList as CovidCaseType[]
+} 

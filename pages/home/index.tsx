@@ -2,7 +2,7 @@ import HomeContainer from '@/containers/home'
 import { genericPostRequest } from '@/services/genericPostRequest'
 import { decodeJWT } from '@/utils/helpers'
 import cookies from 'cookie'
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps, GetStaticProps } from 'next'
 import React, { ReactNode } from 'react'
 import DashboardPage from './[sub-pages]/dashboard'
 
