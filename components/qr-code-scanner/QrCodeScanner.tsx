@@ -18,21 +18,25 @@ export const BarcodeScanner = ({ handleObtainedResults } : { handleObtainedResul
 
   const { ref } = useZxing({
     onResult(result) {
-      const decodedStringifiedResultValue = JSON.stringify(base64.decode(result as unknown as string))
-      const parseDecodedResultValue = JSON.parse(decodedStringifiedResultValue)
-      const doubledParsedResult = JSON.parse(parseDecodedResultValue)
-      const roomNumberValue = doubledParsedResult?.roomNumber as number ?? null
-      const buildingNameValue = doubledParsedResult?.buildingName as string ?? ''
-      const roomIdValue = doubledParsedResult?.roomId as number ?? null
-      setRoomNumber(roomNumberValue)
-      setBuildingName(buildingNameValue)
-      setRoomId(roomIdValue)
-
-      const isAllValueRetrieved = roomIdValue !== null && buildingNameValue !== '' && roomNumberValue !== null 
-      if(isAllValueRetrieved){
-        handleObtainedResults(true)
-      } else {
-        handleObtainedResults(false)
+      try {
+        const decodedStringifiedResultValue = JSON.stringify(base64.decode(result as unknown as string))
+        const parseDecodedResultValue = JSON.parse(decodedStringifiedResultValue)
+        const doubledParsedResult = JSON.parse(parseDecodedResultValue)
+        const roomNumberValue = doubledParsedResult?.roomNumber as number ?? null
+        const buildingNameValue = doubledParsedResult?.buildingName as string ?? ''
+        const roomIdValue = doubledParsedResult?.roomId as number ?? null
+        setRoomNumber(roomNumberValue)
+        setBuildingName(buildingNameValue)
+        setRoomId(roomIdValue)
+  
+        const isAllValueRetrieved = roomIdValue !== null && buildingNameValue !== '' && roomNumberValue !== null 
+        if(isAllValueRetrieved){
+          handleObtainedResults(true)
+        } else {
+          handleObtainedResults(false)
+        }
+      } catch (error) {
+        console.log("Error occurred:", error);
       }
     }
   });
