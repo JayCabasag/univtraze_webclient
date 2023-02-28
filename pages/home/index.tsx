@@ -24,7 +24,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
   let props = { isAuthorize: false, redirectUrl: '/', response: {}}  
   const cookie = cookies.parse(req.headers.cookie || '')
   const token = cookie['token']
+  const decodedToken = decodeJWT(token)
+  const type = decodedToken?.result?.type as string
 
+  if(type === null){
+    return {
+      redirect: {
+        destination: '/verify-account',
+        permanent: true
+      }
+    }
+  }
+  
   if(!token){
     return {
       redirect: {

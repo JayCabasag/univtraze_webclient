@@ -9,6 +9,7 @@ import RoomVisitedSubpage from './room-visited'
 import cookies from 'cookie'
 import VaccineInformationSubPage from './vaccine-information'
 import TemperatureHistorySubPage from './temperature-history'
+import { decodeJWT } from '@/utils/helpers'
 
 export default function SubPage({response, redirectUrl, isAuthorized }: {response: { token: string}, redirectUrl: string, isAuthorized: boolean}) {
   const router = useRouter()
@@ -36,6 +37,18 @@ interface Props {
 export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
   const cookie = cookies.parse(req.headers.cookie || '')
   const token = cookie['token']
+  const decodedToken = decodeJWT(token)
+  const type = decodedToken?.result?.type as string
+
+  if(type === null){
+    return {
+      redirect: {
+        destination: '/verify-account',
+        permanent: true
+      }
+    }
+  }
+
   let props = { isAuthorize: false, redirectUrl: '/', response: { token }}  
   if(!token){
     return {

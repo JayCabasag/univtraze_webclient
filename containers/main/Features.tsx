@@ -59,7 +59,7 @@ export default function FeaturesContainer() {
             <h2 className="text-main text-lg title-font font-medium mb-2">Test Results</h2>
             <p className="leading-relaxed text-base">The app can allow users to upload their test results to the app, which can then be used by public health officials to track the spread of the disease.</p>
             <Link
-              className="align-self-end max-w-max mt-5 group relative inline-flex items-center overflow-hidden rounded bg-main px-8 py-3 text-white focus:outline-none focus:ring active:bg-indigo-500"
+              className="align-self-end max-w-max mt-5 group relative inline-flex items-center overflow-hidden rounded bg-main px-8 py-3 text-white focus:outline-none focus:ring active:bg-main"
               href="/features"
             >
                 <span

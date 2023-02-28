@@ -38,35 +38,9 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
             </div>
             <div className="flex items-center">
                 <div className="flex items-center ml-3">
-                  <div>
-                    <button type="button" className="flex text-sm rounded-full focus:ring-1 focus:ring-main dark:focus:ring-main" aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                      <span className="sr-only">Open user menu</span>
-                      <img className="w-8 h-8 rounded-full" src={IMAGES.DEFAULT_PROFILE_PHOTO} alt="user photo" />
-                    </button>
-                  </div>
-                  <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
-                    <div className="px-4 py-3" role="none">
-                      <p className="text-sm text-gray-900 dark:text-white" role="none">
-                        Neil Sims
-                      </p>
-                      <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                        {email}
-                      </p>
-                    </div>
-                    <ul className="py-1" role="none">
-                      <li>
-                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</Link>
-                      </li>
-                    </ul>
+                  <div className='flex gap-4 items-center max-w-[180px] md:max-w-md'>
+                    <p className='truncate'>Welcome {}</p>
+                    <img className="w-8 h-8 rounded-full" src={IMAGES.DEFAULT_PROFILE_PHOTO} alt="user photo" />
                   </div>
                 </div>
               </div>
@@ -87,7 +61,6 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
                   <Link href="/home/notifications" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-main transition duration-75 dark:text-main group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path><path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path></svg>
                     <span className="flex-1 ml-3 whitespace-nowrap font-medium text-main">Notifications</span>
-                    <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
                   </Link>
               </li>
               <li>
@@ -136,7 +109,7 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
 
       <div className="p-4 md:ml-64 mt-16">
         <BreadCrumb />
-        <div className='py-4 flex flex-col md:flex-row gap-2 md:gap-0 '>
+        <div className='py-4 flex flex-col gap-2 md:gap-0 lg: lg:flex-row '>
             { children }
             <div className='w-full'>
               <CovidUpdates />

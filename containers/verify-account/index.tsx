@@ -494,10 +494,10 @@ export default function VerifyAccountContainer() {
     <section>
     <h1 className="sr-only">User details</h1>
     <div className="mx-auto grid max-w-screen-2xl grid-cols-1 md:grid-cols-2">
-        <div className="bg-gray-50 py-12 md:py-24">
+        <div className="bg-white py-12 md:py-24">
         <div className="mx-auto max-w-lg space-y-8 px-4 lg:px-8">
             <div className="flex items-center gap-4">
-            <span className="h-10 w-10 rounded-full bg-blue-700">
+            <span className="h-10 w-10 rounded-full">
             <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
             </svg>

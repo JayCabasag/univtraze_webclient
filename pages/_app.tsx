@@ -8,7 +8,9 @@ import jwt from 'jsonwebtoken';
 import { setUserStates } from '@/states/user/utils';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import userStore from '@/states/user/userStates';
+import cookie from 'cookie'
+import { GetServerSideProps } from 'next';
+import { decodeJWT } from '@/utils/helpers';
 
 Modal.setAppElement('#__next')
 
@@ -21,14 +23,14 @@ export default function App({ Component, pageProps }: AppProps) {
           const decoded = await jwt.decode(token) as jwt.JwtPayload
           const uid = decoded?.result?.id as number ?? undefined
           const email = decoded?.result?.email as string
-          setUserStates(uid, email, token, true)
+          const type = decoded?.result?.type as string
+          setUserStates(uid, email, token, true, type)
         }
       }
     }
     populateToken()
     AOS.init();
   }, [])
-
   return <>
     <Head>
       <title>Univtraze App</title>

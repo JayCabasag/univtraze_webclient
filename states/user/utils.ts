@@ -1,8 +1,12 @@
+import { decodeJWT } from "@/utils/helpers"
 import Cookies from "js-cookie"
 import userStore from "./userStates"
 
-export const setUserStates = (uid: number, email: string, token: string, isAuthenticated: boolean) => {
+export const setUserStates = (uid: number, email: string, token: string, isAuthenticated: boolean, type?: string) => {
     userStore.setState((state) => ({...state, uid, email, token, isAuthenticated, isLoading: false}))
+    if(type === '' || type !== null){
+        console.log(type)
+    }
 }
 
 export const setAuthorizationCookie = (token: string) => {

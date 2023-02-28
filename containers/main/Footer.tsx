@@ -8,7 +8,7 @@ export default function FooterContainer() {
       <div className="px-5 py-12 mx-auto max-w-7xl lg:py-16 md:px-12 lg:px-20">
         <div className="md:grid md:grid-cols-5 md:gap-8">
           <div>
-            <h3 className="text-xs font-semibold tracking-wider text-blue-600 uppercase">Features</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-main uppercase">Features</h3>
             <ul role="list" className="mt-4 space-y-4">
               <li>
                 <a href="#" className="text-sm font-normal text-gray-500 hover:text-gray-900"> Contact tracing </a>
@@ -22,7 +22,7 @@ export default function FooterContainer() {
             </ul>
           </div>
           <div className="mt-12 md:mt-0">
-            <h3 className="text-xs font-semibold tracking-wider text-blue-600 uppercase">Support</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-text-main uppercase">Support</h3>
             <ul role="list" className="mt-4 space-y-4">
               <li>
                 <a href="#" className="text-sm font-normal text-gray-500 hover:text-gray-900"> Pricing </a>
@@ -33,7 +33,7 @@ export default function FooterContainer() {
             </ul>
           </div>
           <div className="mt-12 md:mt-0">
-            <h3 className="text-xs font-semibold tracking-wider text-blue-600 uppercase">Contacts</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-text-main uppercase">Contacts</h3>
             <ul role="list" className="mt-4 space-y-4">
               <li>
                 <a href="#" className="text-sm font-normal text-gray-500 hover:text-gray-900"> Phone : 091234567 </a>
@@ -44,7 +44,7 @@ export default function FooterContainer() {
             </ul>
           </div>
           <div className="mt-12 md:mt-0">
-            <h3 className="text-xs font-semibold tracking-wider text-blue-600 uppercase">Support</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-text-main uppercase">Support</h3>
             <ul role="list" className="mt-4 space-y-4">
               <li>
                 <a href="#" className="text-sm font-normal text-gray-500 hover:text-gray-900"> Pricing </a>
@@ -55,7 +55,7 @@ export default function FooterContainer() {
             </ul>
           </div>
           <div className="mt-12 md:mt-0">
-            <h3 className="text-xs font-semibold tracking-wider text-blue-600 uppercase">Links</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-text-main uppercase">Links</h3>
             <ul role="list" className="mt-4 space-y-4">
               <li>
                 <Link href="/social/login" className="text-sm font-normal text-gray-500 hover:text-gray-900"> Log in </Link>

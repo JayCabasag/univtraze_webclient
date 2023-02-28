@@ -8,7 +8,6 @@ import Modal from 'react-modal';
 import jwt from 'jsonwebtoken'
 import Cookies from 'js-cookie'
 import userStore from '../../states/user/userStates';
-import { setUserStates } from '../../states/user/utils';
 
 export default function Navbar() {
   const router = useRouter()
