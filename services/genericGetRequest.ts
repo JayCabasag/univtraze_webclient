@@ -18,7 +18,6 @@ export async function genericGetRequest({params,path, success, error, token = ''
         headers: { Authorization: `Bearer ${token}` },
         params: { id: params.id }
     }
-    console.log(config)
     try {
         const response: AxiosResponse = await axios.get(`${CURRENT_SERVER_DOMAIN}${path}`, config);
         success(response.data);

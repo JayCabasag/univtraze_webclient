@@ -3,16 +3,16 @@ import '@/styles/customAnimations.css'
 import type { AppProps } from 'next/app'
 import Modal from 'react-modal';
 import Head from 'next/head';
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import jwt from 'jsonwebtoken';
 import { setUserStates } from '@/states/user/utils';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import cookie from 'cookie'
-import { GetServerSideProps } from 'next';
-import { decodeJWT } from '@/utils/helpers';
+import { QueryClientProvider, QueryClient  } from '@tanstack/react-query'
 
 Modal.setAppElement('#__next')
+
+const queryClient = new QueryClient()
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -38,6 +38,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <Component {...pageProps} />
+    <QueryClientProvider client={queryClient}>
+      <Component {...pageProps} />
+    </QueryClientProvider>
   </>
 }

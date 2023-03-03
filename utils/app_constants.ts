@@ -44,4 +44,6 @@ export const formattedCovidCasesList = (allCases: any[]) => {
     }) as CovidCaseType[]
 
     return allCasesList as CovidCaseType[]
-} 
+}
+
+export const MAX_INITIAL_LOAD = 20
