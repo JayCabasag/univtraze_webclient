@@ -11,14 +11,14 @@ import { IMAGES } from '@/utils/app_constants';
 import BreadCrumb from '@/components/bread-crumb/BreadCrumb';
 import CovidUpdates from '@/components/covid-updates/CovidUpdates';
 import QrCode from 'qrcode.react'
+import base64 from "base-64"
 
 export default function HomeContainer({ children }: { children: ReactNode}) {
   const router = useRouter()
   const { uid, type, fullname  } = userStore()
   const [isShowSidebar, setIsShowSidebar] = useState(false)
   const [showUserQrCode, setShowUserQrCode] = useState(false)
-  const stringifiedQrData = JSON.stringify({id: uid, type: type, name: fullname})
-
+  const stringifiedQrData = base64.encode(JSON.stringify({id: uid, type: type, name: fullname}))
   const handleToggleUserQrCode = () => {
     setShowUserQrCode(prevState => !prevState)
   }
