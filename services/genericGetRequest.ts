@@ -10,11 +10,17 @@ interface GenericGetRequestProps {
     path: string,
     success: (data: any) => void;
     error: (message: string) => void;
+    token?: string
 }
 
-export async function genericGetRequest({params,path, success, error}: GenericGetRequestProps) {
+export async function genericGetRequest({params,path, success, error, token = ''}: GenericGetRequestProps) {
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { id: params.id }
+    }
+    console.log(config)
     try {
-        const response: AxiosResponse = await axios.post(`${CURRENT_SERVER_DOMAIN}${path}`, params);
+        const response: AxiosResponse = await axios.get(`${CURRENT_SERVER_DOMAIN}${path}`, config);
         success(response.data);
     } catch (e: any) {
         error(e.message);

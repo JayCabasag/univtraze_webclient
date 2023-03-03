@@ -10,14 +10,32 @@ import Link from 'next/link';
 import { IMAGES } from '@/utils/app_constants';
 import BreadCrumb from '@/components/bread-crumb/BreadCrumb';
 import CovidUpdates from '@/components/covid-updates/CovidUpdates';
+import QrCode from 'qrcode.react'
 
 export default function HomeContainer({ children }: { children: ReactNode}) {
   const router = useRouter()
-  const { email  } = userStore()
+  const { uid, type, fullname  } = userStore()
   const [isShowSidebar, setIsShowSidebar] = useState(false)
+  const [showUserQrCode, setShowUserQrCode] = useState(false)
+  const stringifiedQrData = JSON.stringify({id: uid, type: type, name: fullname})
+
+  const handleToggleUserQrCode = () => {
+    setShowUserQrCode(prevState => !prevState)
+  }
 
   const handleToggleSidebar = () => {
     setIsShowSidebar(prevState => !prevState)
+  }
+
+  const downloadQrCode = () => {
+    const canvas = document.getElementById("qr-gen") as HTMLCanvasElement
+    const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = `${fullname}_${uid}_${type}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 
   return (
@@ -40,7 +58,9 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
                 <div className="flex items-center ml-3">
                   <div className='flex gap-4 items-center max-w-[180px] md:max-w-md'>
                     <p className='truncate'>Welcome {}</p>
-                    <img className="w-8 h-8 rounded-full" src={IMAGES.DEFAULT_PROFILE_PHOTO} alt="user photo" />
+                    <button onClick={handleToggleUserQrCode}>
+                      <img className="w-8 h-8 rounded-full" src={IMAGES.DEFAULT_PROFILE_PHOTO} alt="user photo" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -115,7 +135,41 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
               <CovidUpdates />
             </div>
         </div>
-      </div>
+      </div> 
+
+      {showUserQrCode && (
+        <>
+        <div drawer-backdrop="true" className="bg-main bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40 h-full w-full" role='dialog'></div>
+        <div onBlur={() => console.log("Closed")} id="small-modal" tabIndex={1} className="fixed top-0 left-0 right-0 z-40 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full justify-center items-center flex" role='dialog'>
+            <div className="relative w-full h-full max-w-md md:h-auto z-50">
+                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div className="flex items-center justify-between p-5 rounded-t">
+                        <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                            User QR Code
+                        </h3>
+                        <button onClick={handleToggleUserQrCode} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="small-modal">
+                            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                            <span className="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <div className="p-2 md:px-6 flex justify-center items-center flex-col w-full object-contain">
+                      <h1 className='uppercase pb-2 font-medium text-main text-xl'>{fullname}</h1>
+                      <QrCode
+                        id='qr-gen'
+                        className='view-room__qr-code'
+                        value={stringifiedQrData}
+                        size={220}
+                      />
+                    </div>
+                    <div className="flex items-center p-6 space-x-2 rounded-b px-16">
+                        <button data-modal-hide="small-modal" type="button" className="text-white bg-main hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 disabled:bg-gray-700 dark:focus:ring-blue-800 w-full" onClick={downloadQrCode}>Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </>
+      )}
+      
       {isShowSidebar && <div drawer-backdrop="true" onClick={handleToggleSidebar} className="bg-main bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-20 h-full w-full block md:hidden" role='dialog'></div>}
     </section>
   )
