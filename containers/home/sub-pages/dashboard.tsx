@@ -44,7 +44,7 @@ export default function DashboardContainer() {
         if(isSuccess){
           const roomVisitedResponse = response.data as RoomVisitedType
           setRoomVisited(roomVisitedResponse)
-          setUserTemperature(roomVisited?.temperature ?? null)
+          setUserTemperature(roomVisitedResponse?.temperature ?? null)
         }
         setIsLoadingTemperature(false)
       },
@@ -100,15 +100,15 @@ export default function DashboardContainer() {
     setHasObtainedResults(false)
     setIsRoomEntered(false)
   }
-  const handleSetRoomVisitedData = (rId: number | null, temperature: string | null) => {
+
+  const handleSetRoomVisitedData = (rId: number | null) => {
     const data = {
       user_id: uid, 
       room_id: rId,
-      temp: temperature
+      temp: userTemperature
     }
     setPayloadData(data)
   }
-
   return (
     <div className="w-full md:max-w-5xl md:p-4 bg-white rounded-lg sm:p-8 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
@@ -167,7 +167,7 @@ export default function DashboardContainer() {
                         </button>
                     </div>
                     <div className="p-2">
-                      {!isRoomEntered && <BarcodeScanner handleObtainedResults={handleUpdateObtainedResults} userTemperature={userTemperature} handleSetRoomVisitedData={handleSetRoomVisitedData}/>}
+                      {!isRoomEntered && <BarcodeScanner handleObtainedResults={handleUpdateObtainedResults} handleSetRoomVisitedData={handleSetRoomVisitedData}/>}
                       {isRoomEntered && <SuccessAlert title="Room Saved" description="Successfully scanned room" />}
                       {isErrorSavingEnteredRoom && <SuccessAlert title="Failed Saving Room" description="Saving entered room failed. Pleas try again" />}
                     </div>

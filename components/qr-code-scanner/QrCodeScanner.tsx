@@ -9,7 +9,7 @@ interface BarcodeDecodedType {
   roomId: number
 }
 
-export const BarcodeScanner = ({ handleObtainedResults,userTemperature, handleSetRoomVisitedData } : { handleObtainedResults: (isSuccess: boolean) => void,userTemperature: null | string, handleSetRoomVisitedData: (rId: number | null, temperature: string | null) => void }) => {
+export const BarcodeScanner = ({ handleObtainedResults, handleSetRoomVisitedData } : { handleObtainedResults: (isSuccess: boolean) => void, handleSetRoomVisitedData: (rId: number | null) => void }) => {
   const [roomNumber, setRoomNumber ] = useState<null | number>(null)
   const [buildingName, setBuildingName] = useState<string>('')
   const [roomId, setRoomId] = useState<null | number>(null)
@@ -28,7 +28,7 @@ export const BarcodeScanner = ({ handleObtainedResults,userTemperature, handleSe
   
         const isAllValueRetrieved = roomIdValue !== null && buildingNameValue !== '' && roomNumberValue !== null 
         if(isAllValueRetrieved){
-          handleSetRoomVisitedData(roomIdValue, userTemperature)
+          handleSetRoomVisitedData(roomIdValue)
           handleObtainedResults(true)
         } else {
           handleObtainedResults(false)
