@@ -85,7 +85,7 @@ export default function NotificationsContainer() {
                               </p>
                           </div>
                           <div className="inline-flex items-center text-sm font-thin text-gray-900 dark:text-white">
-                              {moment(notificationList.createdAt).format('MMM DD, yyyy')}
+                              {moment(notificationList.createdAt).format('MMM DD, yyyy HH:mm a')}
                           </div>
                       </div>
                   </li>

@@ -87,7 +87,7 @@ export default function RoomVisitedContainer() {
                                   </p>
                               </div>
                               <div className="inline-flex items-center text-sm font-thin text-gray-900 dark:text-white">
-                                  {moment(roomVisitedHistoryList.createdAt).format('MMM DD, yyyy')}
+                                  {moment(roomVisitedHistoryList.createdAt).format('MMM DD, yyyy HH:mm a')}
                               </div>
                           </div>
                       </li>

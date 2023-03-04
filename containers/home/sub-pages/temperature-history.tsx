@@ -86,7 +86,7 @@ export default function TemperatureHistoryContainer() {
                                   </p>
                               </div>
                               <div className="inline-flex items-center text-sm font-thin text-gray-900 dark:text-white">
-                                  {moment(temperatureHistory.createdAt).format('MMM DD, yyyy')}
+                                  {moment(temperatureHistory.createdAt).format('MMM DD, yyyy HH:mm a')}
                               </div>
                           </div>
                       </li>
