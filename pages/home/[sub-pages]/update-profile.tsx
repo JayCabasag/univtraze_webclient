@@ -1,4 +1,4 @@
-import UpdateProfileContainer from '@/containers/home/sub-pages/update-profile'
+import { UpdateProfileContainer } from '@/containers/home/sub-pages'
 import React from 'react'
 
 export default function UpdateProfilePage() {

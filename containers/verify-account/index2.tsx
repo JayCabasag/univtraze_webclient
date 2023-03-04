@@ -322,7 +322,7 @@ export default function VerifyAccountContainer() {
                   I&apos;m a
                 </label>
                 <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline capitalize text-slate-500 border-slate-300"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline capitalize border-slate-300"
                   id="role"
                   name="role"
                 >
@@ -362,7 +362,7 @@ export default function VerifyAccountContainer() {
                           First Name:
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="firstName"
                           name="firstName"
                           type="text"
@@ -374,7 +374,7 @@ export default function VerifyAccountContainer() {
                           Middle Name:
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="middleName"
                           name="middleName"
                           type="text"
@@ -386,7 +386,7 @@ export default function VerifyAccountContainer() {
                           Last Name:
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="lastName"
                           name="lastName"
                           type="text"
@@ -399,7 +399,7 @@ export default function VerifyAccountContainer() {
                             Suffix:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="suffix"
                             name="suffix"
                             type="text"
@@ -410,7 +410,7 @@ export default function VerifyAccountContainer() {
                             Date of Birth:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full  border-slate-300"
                             id="dateOfBirth"
                             name="dateOfBirth"
                             type="date"
@@ -425,7 +425,7 @@ export default function VerifyAccountContainer() {
                           Gender:
                         </label>
                         <select
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="gender"
                           name="gender"
                         >
@@ -440,7 +440,7 @@ export default function VerifyAccountContainer() {
                           Mobile Number:
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="mobileNumber"
                           name="mobileNumber"
                           type="text"
@@ -452,7 +452,7 @@ export default function VerifyAccountContainer() {
                           House No./ Bldg. No. Street, Barangay:
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="address"
                           name="addressLineOne"
                           type="text"
@@ -464,7 +464,7 @@ export default function VerifyAccountContainer() {
                           City/Municipality, Province
                         </label>
                         <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                           id="addressLineTwo"
                           name="addressLineTwo"
                           type="text"
@@ -480,7 +480,7 @@ export default function VerifyAccountContainer() {
                             Student Id:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="studentId"
                             name="studentId"
                             type="text"
@@ -492,7 +492,7 @@ export default function VerifyAccountContainer() {
                             Course:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="course"
                             name="course"
                             type="text"
@@ -504,7 +504,7 @@ export default function VerifyAccountContainer() {
                             Year & Section:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="yearAndSection"
                             name="yearAndSection"
                             type="text"
@@ -521,7 +521,7 @@ export default function VerifyAccountContainer() {
                             Department/Faculty:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="professor-department"
                             name="professorDepartment"
                             type="text"
@@ -533,7 +533,7 @@ export default function VerifyAccountContainer() {
                             Employee Id:
                           </label>
                           <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  border-slate-300"
                             id="professor-employee-id"
                             name="professorEmployeeId"
                             type="text"

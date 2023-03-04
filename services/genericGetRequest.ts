@@ -16,7 +16,7 @@ interface GenericGetRequestProps {
 export async function genericGetRequest({params,path, success, error, token = ''}: GenericGetRequestProps) {
     const config = {
         headers: { Authorization: `Bearer ${token}` },
-        params: { id: params.id }
+        params: params
     }
     try {
         const response: AxiosResponse = await axios.get(`${CURRENT_SERVER_DOMAIN}${path}`, config);

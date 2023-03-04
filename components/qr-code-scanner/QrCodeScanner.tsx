@@ -9,7 +9,7 @@ interface BarcodeDecodedType {
   roomId: number
 }
 
-export const BarcodeScanner = ({ handleObtainedResults } : { handleObtainedResults: (isSuccess: boolean) => void }) => {
+export const BarcodeScanner = ({ handleObtainedResults,userTemperature, handleSetRoomVisitedData } : { handleObtainedResults: (isSuccess: boolean) => void,userTemperature: null | string, handleSetRoomVisitedData: (rId: number | null, temperature: string | null) => void }) => {
   const [roomNumber, setRoomNumber ] = useState<null | number>(null)
   const [buildingName, setBuildingName] = useState<string>('')
   const [roomId, setRoomId] = useState<null | number>(null)
@@ -28,6 +28,7 @@ export const BarcodeScanner = ({ handleObtainedResults } : { handleObtainedResul
   
         const isAllValueRetrieved = roomIdValue !== null && buildingNameValue !== '' && roomNumberValue !== null 
         if(isAllValueRetrieved){
+          handleSetRoomVisitedData(roomIdValue, userTemperature)
           handleObtainedResults(true)
         } else {
           handleObtainedResults(false)
@@ -50,7 +51,7 @@ export const BarcodeScanner = ({ handleObtainedResults } : { handleObtainedResul
           <span className="sr-only">Info</span>
           <div>
             <span className="font-medium">Scanned Room Details:</span>
-              <ul className="mt-1.5 ml-4 list-disc list-inside">
+              <ul className="mt-1.5  ml-0 md:ml-4 list-disc list-inside">
               <li className="font-medium"><span>Room Id : {roomId}</span></li>
               <li className="font-medium"><span>Building Number: {buildingName}</span></li>
               <li className="font-medium"><span>Room Number: {roomNumber}</span></li>

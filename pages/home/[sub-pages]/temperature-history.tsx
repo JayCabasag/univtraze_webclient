@@ -1,4 +1,4 @@
-import TemperatureHistoryContainer from '@/containers/home/sub-pages/temperature-history'
+import { TemperatureHistoryContainer } from '@/containers/home/sub-pages'
 import React from 'react'
 
 export default function TemperatureHistorySubPage() {

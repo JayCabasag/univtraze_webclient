@@ -56,7 +56,7 @@ export default function Navbar() {
       >
         <ul className="flex flex-col p-4 mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-md md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
           <li>
-            <button onClick={() => handleGoToSection('home')} className="block py-2 pl-3 pr-4 text-main bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0" aria-current="page">Home</button>
+            <button onClick={() => handleGoToSection('home')} className="block py-2 pl-3 pr-4 text-main rounded md:bg-transparent md:text-main md:p-0" aria-current="page">Home</button>
           </li>
           <li>
             <button onClick={() => handleGoToSection('about')} className="block py-2 pl-3 pr-4 text-main rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</button>

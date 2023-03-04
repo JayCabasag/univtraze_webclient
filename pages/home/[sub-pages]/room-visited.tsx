@@ -1,4 +1,4 @@
-import RoomVisitedContainer from '@/containers/home/sub-pages/room-visited'
+import { RoomVisitedContainer } from '@/containers/home/sub-pages'
 import React from 'react'
 
 export default function RoomVisitedPage() {

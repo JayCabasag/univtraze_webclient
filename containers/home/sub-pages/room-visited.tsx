@@ -1,19 +1,77 @@
+import LoadingSub from '@/components/loading/loading-sub';
+import { genericGetRequest } from '@/services/genericGetRequest';
+import userStore from '@/states/user/userStates';
+import { MAX_INITIAL_LOAD } from '@/utils/app_constants';
 import moment from 'moment'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+interface RoomVisitedType {
+    building_name: string;
+    createdAt: string;
+    id: number;
+    room_id: number;
+    room_name: string;
+    room_number: string;
+    temperature: null | number;
+    updatedAt: string;
+    user_id: number;
+}
 
 export default function RoomVisitedContainer() {
+    const { token, uid } = userStore((state) => state)
+    const [roomVisitedHistoryList, setRoomVisitedHistoryList] = useState<RoomVisitedType[]>([])
+    const [showAllRoomVisitedHistory, setShowAllRoomVisitedHistory] = useState(false)
+    const [isLoadingRoomVisitedHistory, setIsLoadingRoomVisitedHistory] = useState(false)
+
+    useEffect(() => {
+        const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
+            setIsLoadingRoomVisitedHistory(true)
+            if(!uid){
+                return []
+            }
+            await genericGetRequest({
+                params: { id: uid },
+                path: `/rooms/temperature-history/${uid}`,
+                success: (response) => {
+                    const isSuccess = response.success === 1
+                    if(isSuccess){
+                        const roomVisitedHistoryList = response.data as RoomVisitedType[]
+                        setRoomVisitedHistoryList(roomVisitedHistoryList)
+                    }
+                    setIsLoadingRoomVisitedHistory(false)
+                },
+                error: (response) => {
+                    setIsLoadingRoomVisitedHistory(false)
+                    return response
+                },
+                token
+            })
+        }
+        getAllTemperatureHistory(uid, token)
+    }, [uid, token])
+
+    const handleShowAllTempHistory = () => {
+       setShowAllRoomVisitedHistory(true)
+    }
+
     return (
         <div className="w-full md:max-w-5xl md:p-4 bg-white rounded-lg sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
                 <h5 className="text-xl font-bold leading-none text-main dark:text-white">Room Visited</h5>
-                <button className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+                <button onClick={handleShowAllTempHistory} className="text-sm font-medium text-main hover:underline dark:text-main">
                     View all
                 </button>
           </div>
           <div className="flow-root">
                 <ul role="list" className="">
-                {[1,2, 3, 4, 5, 6, 7].map((index: number) => {
-                    return <li className="py-3 sm:py-4">
+                {isLoadingRoomVisitedHistory && (
+                    <LoadingSub />
+                )}
+                {!isLoadingRoomVisitedHistory && roomVisitedHistoryList.map((roomVisitedHistoryList:  RoomVisitedType, index: number) => {
+                     if(!showAllRoomVisitedHistory && index > MAX_INITIAL_LOAD){
+                        return <></>
+                    } 
+                    return <li className="py-3 sm:py-4" key={index}>
                           <div className="flex items-center space-x-4">
                               <div className="flex-shrink-0">
                               <svg fill="none" stroke="currentColor" className='h-6 w-6' strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -22,14 +80,14 @@ export default function RoomVisitedContainer() {
                               </div>
                               <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                      Room Number
+                                      {roomVisitedHistoryList.building_name}
                                   </p>
                                   <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                      Building number...
+                                  {roomVisitedHistoryList.room_name} - {roomVisitedHistoryList.room_number}
                                   </p>
                               </div>
                               <div className="inline-flex items-center text-sm font-thin text-gray-900 dark:text-white">
-                                  {moment().format('MMM dd, yyyy')}
+                                  {moment(roomVisitedHistoryList.createdAt).format('MMM DD, yyyy')}
                               </div>
                           </div>
                       </li>

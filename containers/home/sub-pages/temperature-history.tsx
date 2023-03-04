@@ -15,7 +15,8 @@ interface TemperatureHistoryType {
     temperature: null | number;
     updatedAt: string;
     user_id: number;
-  };
+}
+
 export default function TemperatureHistoryContainer() {
     const { token, uid } = userStore((state) => state)
     const [temperatureHistoryList, setTemperatureHistoryList] = useState<TemperatureHistoryType[]>([])
@@ -29,7 +30,7 @@ export default function TemperatureHistoryContainer() {
                 return []
             }
             await genericGetRequest({
-                params: {},
+                params: { id: uid },
                 path: `/rooms/temperature-history/${uid}`,
                 success: (response) => {
                     const isSuccess = response.success === 1
@@ -56,7 +57,7 @@ export default function TemperatureHistoryContainer() {
         <div className="w-full md:max-w-5xl md:p-4 bg-white rounded-lg sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
                 <h5 className="text-xl font-bold leading-none text-main dark:text-white">Temperature history</h5>
-                <button className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" onClick={handleShowAllTempHistory}>
+                <button className="text-sm font-medium text-main hover:underline dark:text-main" onClick={handleShowAllTempHistory}>
                     View all
                 </button>
           </div>
@@ -73,19 +74,19 @@ export default function TemperatureHistoryContainer() {
                           <div className="flex items-center space-x-4">
                               <div className="flex-shrink-0">
                               <svg fill="none" stroke="currentColor" className='h-6 w-6' strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
                               </svg>
                               </div>
                               <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                     {temperatureHistory.building_name}
+                                     Temp. : { temperatureHistory.temperature ?? 'Not set'}
                                   </p>
                                   <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                      Room # :  {temperatureHistory.room_number} - Temp. : { temperatureHistory.temperature ?? 'Not set'}
+                                  {temperatureHistory.building_name} - Room # :  {temperatureHistory.room_number}
                                   </p>
                               </div>
                               <div className="inline-flex items-center text-sm font-thin text-gray-900 dark:text-white">
-                                  {moment(temperatureHistory.createdAt).format('MMM dd, yyyy')}
+                                  {moment(temperatureHistory.createdAt).format('MMM DD, yyyy')}
                               </div>
                           </div>
                       </li>
