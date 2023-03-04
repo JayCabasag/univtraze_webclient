@@ -31,7 +31,7 @@ export default function RoomVisitedContainer() {
             }
             await genericGetRequest({
                 params: { id: uid },
-                path: `/rooms/temperature-history/${uid}`,
+                path: `/rooms/visited-rooms/${uid}`,
                 success: (response) => {
                     const isSuccess = response.success === 1
                     if(isSuccess){

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function FailedAlert({title, description}:{title: string, description: string}) {
   return (
-    <div role="alert" className="rounded bg-red-50 p-4">
+    <div role="alert" className="rounded bg-red-50 p-4 mx-2">
     <div className="flex items-center gap-2 text-red-800">
       <svg
         xmlns="http://www.w3.org/2000/svg"

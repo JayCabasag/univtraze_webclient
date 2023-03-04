@@ -1,3 +1,4 @@
+import FailedAlert from '@/components/alerts/FailedAlert';
 import SuccessAlert from '@/components/alerts/SuccessAlert';
 import { BarcodeScanner } from '@/components/qr-code-scanner/QrCodeScanner';
 import { genericGetRequest } from '@/services/genericGetRequest';
@@ -29,6 +30,7 @@ export default function DashboardContainer() {
   const [payloadData, setPayloadData] = useState<PayloadData>({user_id: undefined, room_id: null, temp: null })
   const [isErrorSavingEnteredRoom, setIsErrorSavingEnteredRoom] = useState(false)
   const [isLoadingSavingEnteredRoom, setIsLoadingSavingEnteredRoom] = useState(false)
+  const [failedEnteringRoomDescription, setFailedEnteringRoomDescription] = useState('')
   
   useEffect(() => {
     const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
@@ -70,6 +72,11 @@ export default function DashboardContainer() {
   }
 
   const handleSaveRoom = async () => {
+    if(payloadData.temp === null || payloadData.temp === ''){
+      setFailedEnteringRoomDescription('Make sure that your temperature is scanned.')
+      return setIsErrorSavingEnteredRoom(true)
+    }
+
     setIsErrorSavingEnteredRoom(false)
     setIsRoomEntered(false)
     setIsLoadingSavingEnteredRoom(true)
@@ -167,9 +174,9 @@ export default function DashboardContainer() {
                         </button>
                     </div>
                     <div className="p-2">
+                      {isErrorSavingEnteredRoom && <FailedAlert title="Failed Saving Room" description={failedEnteringRoomDescription} />}
                       {!isRoomEntered && <BarcodeScanner handleObtainedResults={handleUpdateObtainedResults} handleSetRoomVisitedData={handleSetRoomVisitedData}/>}
                       {isRoomEntered && <SuccessAlert title="Room Saved" description="Successfully scanned room" />}
-                      {isErrorSavingEnteredRoom && <SuccessAlert title="Failed Saving Room" description="Saving entered room failed. Pleas try again" />}
                     </div>
                     <div className="flex items-center p-6 space-x-2 rounded-b">
                         {!isRoomEntered && <>
