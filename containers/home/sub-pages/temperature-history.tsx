@@ -22,6 +22,7 @@ export default function TemperatureHistoryContainer() {
     const [temperatureHistoryList, setTemperatureHistoryList] = useState<TemperatureHistoryType[]>([])
     const [showAllTempHistory, setShowAllTempHistory] = useState(false)
     const [isLoadingTemperatureHistory, setIsLoadingTemperatureHistory] = useState(false)
+    const hasTemperatureHistory = temperatureHistoryList.length > 0
 
     useEffect(() => {
         const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
@@ -65,6 +66,11 @@ export default function TemperatureHistoryContainer() {
                 <ul role="list" className="">
                 {isLoadingTemperatureHistory && (
                     <LoadingSub />
+                )}
+                {!isLoadingTemperatureHistory &&  !hasTemperatureHistory && (
+                    <div className='w-full'>
+                        <p className='font-medium text-center text-main'>No temperature history...</p>
+                    </div>
                 )}
                 {!isLoadingTemperatureHistory && temperatureHistoryList.map((temperatureHistory:  TemperatureHistoryType, index: number) => {
                     if(!showAllTempHistory && index > MAX_INITIAL_LOAD){

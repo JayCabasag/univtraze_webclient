@@ -22,6 +22,7 @@ export default function RoomVisitedContainer() {
     const [roomVisitedHistoryList, setRoomVisitedHistoryList] = useState<RoomVisitedType[]>([])
     const [showAllRoomVisitedHistory, setShowAllRoomVisitedHistory] = useState(false)
     const [isLoadingRoomVisitedHistory, setIsLoadingRoomVisitedHistory] = useState(false)
+    const hasRoomVisited = roomVisitedHistoryList.length > 0
 
     useEffect(() => {
         const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
@@ -67,7 +68,12 @@ export default function RoomVisitedContainer() {
                 {isLoadingRoomVisitedHistory && (
                     <LoadingSub />
                 )}
-                {!isLoadingRoomVisitedHistory && roomVisitedHistoryList.map((roomVisitedHistoryList:  RoomVisitedType, index: number) => {
+                {!isLoadingRoomVisitedHistory &&  !hasRoomVisited && (
+                    <div className='w-full'>
+                        <p className='font-medium text-center text-main'>No rooms visited...</p>
+                    </div>
+                )}
+                {hasRoomVisited && !isLoadingRoomVisitedHistory && roomVisitedHistoryList.map((roomVisitedHistoryList:  RoomVisitedType, index: number) => {
                      if(!showAllRoomVisitedHistory && index > MAX_INITIAL_LOAD){
                         return <></>
                     } 
