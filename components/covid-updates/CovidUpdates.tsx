@@ -1,50 +1,38 @@
+import { getAllCountryCovidUpdate } from '@/api/covidUpdates/getAllCountryCovidUpdate';
+import { getAllDayCountryCovidUpdate } from '@/api/covidUpdates/getAllDayCountryCovidUpdate';
 import { formattedCovidCasesList } from '@/utils/app_constants';
 import { CovidCaseType } from '@/utils/types';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import moment from 'moment';
 import React, { ReactNode, useEffect, useState } from 'react';
 import CovidChart from '../covid-chart/CovidChart';
 
 export default function CovidUpdates() {
-  const [updatedAt, setUpdatedAt] = useState<number>(0)
-  const [activeCases, setActiveCases] = useState(0)
-  const [country, setCountry] = useState('Philippines')
-  const [totalDeaths, setTotalDeaths] = useState(0)
-  const [totalRecovered, setTotalRecovered] = useState(0)
-  const [allCovidCases, setAllCovidCases] = useState<any>([])
-  const [allRecoveredCase, setAllRecoveredCase] = useState<any>([])
-  const [allDeathCase, setAllDeathCase] = useState<any>([])
+  const { isLoading: isLoadingCovidUpdate , isError: isErrorCovidUpdate, data: covidUpdateData } = useQuery({
+    queryKey: ['country/covid-update'],
+    queryFn: () => getAllCountryCovidUpdate('PH'),
+  })
 
-  useEffect(() => {
-    const handleGetCovidData = async () => {
-        const res = await axios.get('https://disease.sh/v3/covid-19/countries/PH?strict=true')
-        const updatedDateTime = res?.data?.updated as number ?? 0
-        const activeCases = res?.data?.active as number ?? 0
-        const country = res?.data?.country as string ?? ''
-        const deaths = res?.data?.deaths as number ?? 0
-        const totalRecovered = res?.data?.recovered as number ?? 0
-        setUpdatedAt(updatedDateTime)
-        setActiveCases(activeCases)
-        setCountry(country)
-        setTotalDeaths(deaths)
-        setTotalRecovered(totalRecovered)
-    } 
-    handleGetCovidData()
-    const handleGetAllDayCovidResponse = async () => {
-      const res = await axios.get("https://disease.sh/v3/covid-19/historical/Philippines?lastdays=all")
-      const allCases = res?.data?.timeline?.cases as any ?? {}
-      const allRecoveredCases = res?.data?.timeline?.recovered as any ?? {}
-      const allDeathsCases = res?.data?.timeline?.deaths as any ?? {}
-      const allCasesList = formattedCovidCasesList(allCases)
-      const allRecoveredList = formattedCovidCasesList(allRecoveredCases)
-      const allDeathsList = formattedCovidCasesList(allDeathsCases)
+  const updatedAt = covidUpdateData?.updated as number ?? 0
+  const activeCases = covidUpdateData?.active as number ?? 0
+  const country = covidUpdateData?.country as string ?? ''
+  const totalDeaths = covidUpdateData?.deaths as number ?? 0
+  const totalRecovered =covidUpdateData?.recovered as number ?? 0
 
-      setAllRecoveredCase(allRecoveredList)
-      setAllDeathCase(allDeathsList)
-      setAllCovidCases(allCasesList)
-    }
-    handleGetAllDayCovidResponse()
-  }, [updatedAt, activeCases, country, totalDeaths, totalRecovered])
+  const { isLoading: isLoadingAllDayCovidUpdate , isError: isErrorAllDayCovidUpdate, data: covidAllDayUpdateData } = useQuery({
+    queryKey: ['country/all-day-covid-update'],
+    queryFn: () => getAllDayCountryCovidUpdate('Philippines')
+  })
+
+  const allCases = covidAllDayUpdateData?.timeline?.cases as any ?? {}
+  const allRecoveredCases = covidAllDayUpdateData?.timeline?.recovered as any ?? {}
+  const allDeathsCases = covidAllDayUpdateData?.timeline?.deaths as any ?? {}
+  const allCasesList = formattedCovidCasesList(allCases)
+  const allRecoveredList = formattedCovidCasesList(allRecoveredCases)
+  const allDeathsList = formattedCovidCasesList(allDeathsCases)
+
+  console.log(covidAllDayUpdateData, covidAllDayUpdateData)
   
   return (
     <div className="w-full md:max-w-2xl p-2 md:p-4 bg-white rounded-lg flex flex-col gap-2 md:gap-4">
@@ -54,7 +42,7 @@ export default function CovidUpdates() {
       <div className='flex items-center justify-between'>
         <p className='text-xs text-gray-500'>Last updated at: { moment(new Date(updatedAt)).toLocaleString() }</p>
       </div>
-      <CovidChart allCasesList={allCovidCases} allRecoveredList={allRecoveredCase} allDeathCaseList={allDeathCase}/>
+      <CovidChart allCasesList={allCasesList} allRecoveredList={allRecoveredList} allDeathCaseList={allDeathsList}/>
       <article className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow">
         <div>
           <strong className="block text-sm font-medium text-gray-500"> Active cases </strong>

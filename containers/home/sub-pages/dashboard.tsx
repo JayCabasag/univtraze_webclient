@@ -5,6 +5,7 @@ import { genericGetRequest } from '@/services/genericGetRequest';
 import { genericPostRequest } from '@/services/genericPostRequest';
 import userStore from '@/states/user/userStates';
 import { formatToDegreesCelcius } from '@/utils/formatter';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
 interface RoomVisitedType {
@@ -135,26 +136,26 @@ export default function DashboardContainer() {
               </button>
           </div>
           <div className="max-w-sm p-6 bg-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-              <a href="#">
+              <Link href='/home/report-disease'>
                   <h5 className="mb-2 text-2xl font-bold tracking-tight text-main dark:text-white">Report Communicable disease</h5>
-              </a>
+              </Link>
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 flex-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, ducimus?</p>
-              <button className="max-w-max inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-main rounded-lg hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <Link href='/home/report-disease' className="max-w-max inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-main rounded-lg hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   Report a Disease
                   <svg aria-hidden="true" className="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-              </button>
+              </Link>
           </div>
         </div>
         <div className='w-full flex flex-col md:flex-row gap-2 md:gap-4'>
           <div className="max-w-sm p-6 bg-white rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
+              <Link href="/home/emergency-report">
                   <h5 className="mb-2 text-2xl font-bold tracking-tight text-main dark:text-white">Emergency report</h5>
-              </a>
+              </Link>
               <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, ducimus?</p>
-              <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-main rounded-lg hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <Link href="/home/emergency-report" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-main rounded-lg hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   Report an Emergency
                   <svg aria-hidden="true" className="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-              </a>
+              </Link>
           </div>
         </div>
       </div>

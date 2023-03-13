@@ -18,6 +18,11 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
   const [isShowSidebar, setIsShowSidebar] = useState(false)
   const [showUserQrCode, setShowUserQrCode] = useState(false)
   const stringifiedQrData = base64.encode(JSON.stringify({id: uid, type: type, name: fullname}))
+  const router = useRouter()
+  const isOnDashboardRoute = 
+    router.asPath === '/home' || router.asPath === '/home/dashboard' ||
+    router.asPath === '/home/emergency-report' || router.asPath === '/home/report-disease'
+
   const handleToggleUserQrCode = () => {
     setShowUserQrCode(prevState => !prevState)
   }
@@ -130,9 +135,11 @@ export default function HomeContainer({ children }: { children: ReactNode}) {
         <BreadCrumb />
         <div className='py-4 flex flex-col gap-2 md:gap-0 lg: lg:flex-row '>
             { children }
-            <div className='w-full'>
-              <CovidUpdates />
-            </div>
+            {isOnDashboardRoute && (
+              <div className='w-full'>
+                <CovidUpdates />
+              </div>
+            )}
         </div>
       </div> 
 

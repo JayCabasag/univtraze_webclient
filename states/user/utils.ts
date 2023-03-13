@@ -1,4 +1,5 @@
 import { genericGetRequest } from "@/services/genericGetRequest"
+import { IMAGES } from "@/utils/app_constants"
 import Cookies from "js-cookie"
 import userStore from "./userStates"
 
@@ -10,8 +11,11 @@ export const getUserDetails = async (uid: number, type: string, token: string) =
         success: (response) => {
             const firstname = response?.data?.firstname as string ?? '' 
             const lastname = response?.data?.lastname as string ?? ''
-            const fullname = `${firstname} ${lastname}` 
-            userStore.setState((state) => ({...state, fullname }))
+            const fullname = `${firstname} ${lastname}`
+            const profileUrl = response?.data?.profile_url as string ?? IMAGES.DEFAULT_PROFILE_PHOTO
+            const birthday = response?.data?.birthday as string ?? ''
+            const mobileNumber = response?.data?.mobile_number as string ?? ''
+            userStore.setState((state) => ({...state, fullname, profileUrl, birthday, mobileNumber }))
         },
         error: (response) => {
             console.error(response)

@@ -5,5 +5,5 @@ export async function getAllTemperatureHistory(uid: number | undefined, token: s
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     }
-    axios.get(`${CURRENT_SERVER_DOMAIN}/rooms/temperature-history/${uid}`, config).then((res) => res)
+    await axios.get(`${CURRENT_SERVER_DOMAIN}/rooms/temperature-history/${uid}`, config).then((res) => res)
 }

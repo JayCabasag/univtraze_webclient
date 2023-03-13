@@ -10,6 +10,8 @@ import cookies from 'cookie'
 import VaccineInformationSubPage from './vaccine-information'
 import TemperatureHistorySubPage from './temperature-history'
 import { decodeJWT } from '@/utils/helpers'
+import ReportDiseaseSubpage from './report-disease'
+import EmergencyReportSubpage from './emergency-report'
 
 export default function SubPage({response, redirectUrl, isAuthorized }: {response: { token: string}, redirectUrl: string, isAuthorized: boolean}) {
   const router = useRouter()
@@ -25,6 +27,8 @@ export default function SubPage({response, redirectUrl, isAuthorized }: {respons
         {activeSubpage === 'update-profile' && <UpdateProfileSubpage />}
         {activeSubpage === 'vaccine-information' && <VaccineInformationSubPage />}
         {activeSubpage === 'room-visited' && <RoomVisitedSubpage />}
+        {activeSubpage === 'report-disease' && <ReportDiseaseSubpage />}
+        {activeSubpage === 'emergency-report' && <EmergencyReportSubpage />}
     </HomeContainer>
   )
 }
