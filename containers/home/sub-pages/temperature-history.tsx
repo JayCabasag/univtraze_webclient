@@ -4,6 +4,8 @@ import { genericGetRequest } from '@/services/genericGetRequest'
 import userStore from '@/states/user/userStates'
 import { MAX_INITIAL_LOAD } from '@/utils/app_constants'
 import LoadingSub from '@/components/loading/loading-sub'
+import { useQuery } from '@tanstack/react-query'
+import { getAllTemperatureHistory } from '@/api/user/getAllTemperatureHistory'
 
 interface TemperatureHistoryType {
     building_name: string;
@@ -19,41 +21,19 @@ interface TemperatureHistoryType {
 
 export default function TemperatureHistoryContainer() {
     const { token, uid } = userStore((state) => state)
-    const [temperatureHistoryList, setTemperatureHistoryList] = useState<TemperatureHistoryType[]>([])
     const [showAllTempHistory, setShowAllTempHistory] = useState(false)
     const [isLoadingTemperatureHistory, setIsLoadingTemperatureHistory] = useState(false)
+
+    const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllTemperatureHistory(uid, token)})
+    const temperatureHistoryList = data?.data as TemperatureHistoryType[] ?? []
     const hasTemperatureHistory = temperatureHistoryList.length > 0
 
-    useEffect(() => {
-        const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
-            setIsLoadingTemperatureHistory(true)
-            if(!uid){
-                return []
-            }
-            await genericGetRequest({
-                params: { id: uid },
-                path: `/rooms/temperature-history/${uid}`,
-                success: (response) => {
-                    const isSuccess = response.success === 1
-                    if(isSuccess){
-                        const tempHistoryList = response.data as TemperatureHistoryType[]
-                        setTemperatureHistoryList(tempHistoryList)
-                    }
-                    setIsLoadingTemperatureHistory(false)
-                },
-                error: (response) => {
-                    setIsLoadingTemperatureHistory(false)
-                    return response
-                },
-                token
-            })
-        }
-        getAllTemperatureHistory(uid, token)
-    }, [uid, token])
+    console.log(data)
 
     const handleShowAllTempHistory = () => {
         setShowAllTempHistory(true)
     }
+
     return (
         <div className="w-full md:max-w-5xl md:p-4 bg-white rounded-lg sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
@@ -72,7 +52,7 @@ export default function TemperatureHistoryContainer() {
                         <p className='font-medium text-center text-main'>No temperature history...</p>
                     </div>
                 )}
-                {!isLoadingTemperatureHistory && temperatureHistoryList.map((temperatureHistory:  TemperatureHistoryType, index: number) => {
+                {!isLoadingTemperatureHistory && temperatureHistoryList?.map((temperatureHistory:  TemperatureHistoryType, index: number) => {
                     if(!showAllTempHistory && index > MAX_INITIAL_LOAD){
                         return <></>
                     } 

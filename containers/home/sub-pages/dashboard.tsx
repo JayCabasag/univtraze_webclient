@@ -1,3 +1,4 @@
+import { getUserTodaysTemperature } from '@/api/user/getUserTodaysTemperature';
 import FailedAlert from '@/components/alerts/FailedAlert';
 import SuccessAlert from '@/components/alerts/SuccessAlert';
 import { BarcodeScanner } from '@/components/qr-code-scanner/QrCodeScanner';
@@ -5,9 +6,13 @@ import { genericGetRequest } from '@/services/genericGetRequest';
 import { genericPostRequest } from '@/services/genericPostRequest';
 import userStore from '@/states/user/userStates';
 import { formatToDegreesCelcius } from '@/utils/formatter';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
+interface Params {
+  [key: string]: any
+}
 interface RoomVisitedType {
   id: number;
   userId: number;
@@ -27,41 +32,14 @@ export default function DashboardContainer() {
   
   const { uid, token } = userStore(state => state)
   const [isLoadingTemperature, setIsLoadingTemperature] = useState(false)
-  const [userTemperature, setUserTemperature] = useState<string | null>('')
   const [roomVisited, setRoomVisited] = useState<RoomVisitedType>()
   const [payloadData, setPayloadData] = useState<PayloadData>({user_id: undefined, room_id: null, temp: null })
   const [isErrorSavingEnteredRoom, setIsErrorSavingEnteredRoom] = useState(false)
   const [isLoadingSavingEnteredRoom, setIsLoadingSavingEnteredRoom] = useState(false)
   const [failedEnteringRoomDescription, setFailedEnteringRoomDescription] = useState('')
-  
-  useEffect(() => {
-    const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
-    setIsLoadingTemperature(true)
-    if(!uid){
-      return []
-    }
-    await genericGetRequest({
-      params: {},
-      path: `/rooms/user-temperature/${uid}`,
-      success: (response) => {
-        const isSuccess = response.success === 1
-        if(isSuccess){
-          const roomVisitedResponse = response.data as RoomVisitedType
-          setRoomVisited(roomVisitedResponse)
-          setUserTemperature(roomVisitedResponse?.temperature ?? null)
-        }
-        setIsLoadingTemperature(false)
-      },
-      error: (response) => {
-        setIsLoadingTemperature(false)
-        return response
-      },
-      token
-    })
-    }
-    getAllTemperatureHistory(uid, token)
-  }, [uid, token])
-
+  const params:Params = {}
+  const { data, isLoading, isError } = useQuery({ queryKey: ['user/todays-temperature'], queryFn: () => getUserTodaysTemperature(uid, token, params)})
+  const userTemperature = data?.data as string ?? 'Not set'
   const [showQrScannerModal, setShowQrScannerModal] = useState(false)
   const [hasObtainedResults, setHasObtainedResults] = useState(false)
   const [isRoomEntered, setIsRoomEntered] = useState(false)

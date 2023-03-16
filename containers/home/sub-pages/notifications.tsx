@@ -1,9 +1,14 @@
+import { getAllNotifications } from '@/api/user/getAllNotifications';
 import LoadingSub from '@/components/loading/loading-sub';
 import { genericGetRequest } from '@/services/genericGetRequest';
 import userStore from '@/states/user/userStates';
 import { IMAGES } from '@/utils/app_constants'
+import { useQuery } from '@tanstack/react-query';
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+interface Params {
+  [key: string]: any;
+}
 interface NotificationType {
     createdAt: string;
     id: number;
@@ -19,37 +24,12 @@ interface NotificationType {
 export default function NotificationsContainer() {
 
   const { token, uid } = userStore((state) => state)
-  const [notificationsList, setNotificationsList] = useState<NotificationType[]>([])
   const [showAllNotifications, setShowAllNotifications] = useState(false)
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(false)
-
-  useEffect(() => {
-    const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
-    setIsLoadingNotifications(true)
-    if(!uid){
-      return []
-    }
-    await genericGetRequest({
-      params: { "start-at": 1},
-      path: `/notifications/user-notifications/${uid}`,
-      success: (response) => {
-        const isSuccess = response.success === 1
-        if(isSuccess){
-          const notifList = response.results as NotificationType[]
-          console.log(response.data)
-          setNotificationsList(notifList)
-        }
-        setIsLoadingNotifications(false)
-      },
-      error: (response) => {
-          setIsLoadingNotifications(false)
-          return response
-      },
-      token
-    })
-    }
-    getAllTemperatureHistory(uid, token)
-  }, [uid, token])
+  const params: Params = { "start-at": 1}
+  const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllNotifications(uid, token, params)})
+  const notificationsList = data.results as NotificationType[] ?? []
+  const hasNotifications = notificationsList.length > 0
 
   const handleShowAllTempHistory = () => {
     setShowAllNotifications(true)

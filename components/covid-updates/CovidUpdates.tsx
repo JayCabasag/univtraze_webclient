@@ -31,8 +31,6 @@ export default function CovidUpdates() {
   const allCasesList = formattedCovidCasesList(allCases)
   const allRecoveredList = formattedCovidCasesList(allRecoveredCases)
   const allDeathsList = formattedCovidCasesList(allDeathsCases)
-
-  console.log(covidAllDayUpdateData, covidAllDayUpdateData)
   
   return (
     <div className="w-full md:max-w-2xl p-2 md:p-4 bg-white rounded-lg flex flex-col gap-2 md:gap-4">

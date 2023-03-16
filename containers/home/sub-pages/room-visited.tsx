@@ -1,10 +1,14 @@
+import { getAllRoomVisited } from '@/api/user/getAllRoomVisited';
 import LoadingSub from '@/components/loading/loading-sub';
 import { genericGetRequest } from '@/services/genericGetRequest';
 import userStore from '@/states/user/userStates';
 import { MAX_INITIAL_LOAD } from '@/utils/app_constants';
+import { useQuery } from '@tanstack/react-query';
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-
+interface Params {
+  [key: string]: any;
+}
 interface RoomVisitedType {
     building_name: string;
     createdAt: string;
@@ -19,38 +23,13 @@ interface RoomVisitedType {
 
 export default function RoomVisitedContainer() {
     const { token, uid } = userStore((state) => state)
-    const [roomVisitedHistoryList, setRoomVisitedHistoryList] = useState<RoomVisitedType[]>([])
     const [showAllRoomVisitedHistory, setShowAllRoomVisitedHistory] = useState(false)
     const [isLoadingRoomVisitedHistory, setIsLoadingRoomVisitedHistory] = useState(false)
+    const params:Params = { id: uid }
+    const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllRoomVisited(uid, token, params)})
+    const roomVisitedHistoryList = data?.data as RoomVisitedType[] ?? []
     const hasRoomVisited = roomVisitedHistoryList.length > 0
-
-    useEffect(() => {
-        const getAllTemperatureHistory = async (uid: number | undefined, token: string) => {
-            setIsLoadingRoomVisitedHistory(true)
-            if(!uid){
-                return []
-            }
-            await genericGetRequest({
-                params: { id: uid },
-                path: `/rooms/visited-rooms/${uid}`,
-                success: (response) => {
-                    const isSuccess = response.success === 1
-                    if(isSuccess){
-                        const roomVisitedHistoryList = response.data as RoomVisitedType[]
-                        setRoomVisitedHistoryList(roomVisitedHistoryList)
-                    }
-                    setIsLoadingRoomVisitedHistory(false)
-                },
-                error: (response) => {
-                    setIsLoadingRoomVisitedHistory(false)
-                    return response
-                },
-                token
-            })
-        }
-        getAllTemperatureHistory(uid, token)
-    }, [uid, token])
-
+    
     const handleShowAllTempHistory = () => {
        setShowAllRoomVisitedHistory(true)
     }
