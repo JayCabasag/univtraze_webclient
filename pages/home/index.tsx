@@ -1,32 +1,27 @@
 import HomeContainer from '@/containers/home'
 import { genericPostRequest } from '@/services/genericPostRequest'
 import { decodeJWT } from '@/utils/helpers'
+import { PageProps } from '@/utils/types'
 import cookies from 'cookie'
 import { GetServerSideProps, GetStaticProps } from 'next'
 import React, { ReactNode } from 'react'
 import DashboardPage from './[sub-pages]/dashboard'
 
-export default function HomePage() {
+
+export default function HomePage(props: PageProps) {
   return (
-    <HomeContainer>
-      <DashboardPage />
+    <HomeContainer props={props}>
+      <DashboardPage props={props}/>
     </HomeContainer>
   )
 }
 
-interface Props {
-  isAuthorize: boolean,
-  redirectUrl: string,
-  response: any
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
-  let props = { isAuthorize: false, redirectUrl: '/', response: {}}  
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req, res }) => {
   const cookie = cookies.parse(req.headers.cookie || '')
   const token = cookie['token']
   const decodedToken = decodeJWT(token)
   const type = decodedToken?.result?.type as string
-
+  const props = { token : token } 
   if(type === null){
     return {
       redirect: {
@@ -87,7 +82,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
       },
       token
     })
-    
+
     return {
       props: props
     }

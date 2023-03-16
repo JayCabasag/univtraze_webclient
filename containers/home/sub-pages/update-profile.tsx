@@ -4,10 +4,14 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import React, { useRef, useState } from 'react'
 import { IMAGES } from '@/utils/app_constants'
 import moment from 'moment'
+import { PageProps } from '@/utils/types'
+import { getUidFromToken } from '@/utils/parser'
 
-export default function UpdateProfileContainer() {
+export default function UpdateProfileContainer({ props }: {props: PageProps}) {
+  const token = props.token as string
+  const { uid } = getUidFromToken(token)
 
-  const { email, uid, token, fullname, type, mobileNumber, birthday } = userStore(state => state)
+  const { email, fullname, type, mobileNumber, birthday } = userStore(state => state)
   const firebaseStoragePath = `profiles/${uid}/`
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>(IMAGES.DEFAULT_PROFILE_PHOTO)
   const [uploadProfilePhotoProgress, setUploadProfilePhotoProgress] = useState<number>(0)

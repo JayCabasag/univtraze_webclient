@@ -6,6 +6,8 @@ import { genericGetRequest } from '@/services/genericGetRequest';
 import { genericPostRequest } from '@/services/genericPostRequest';
 import userStore from '@/states/user/userStates';
 import { formatToDegreesCelcius } from '@/utils/formatter';
+import { getUidFromToken } from '@/utils/parser';
+import { PageProps } from '@/utils/types';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
@@ -28,9 +30,10 @@ interface PayloadData {
   temp: string | null
 }
 
-export default function DashboardContainer() {
-  
-  const { uid, token } = userStore(state => state)
+
+export default function DashboardContainer({ props } : { props: PageProps}) {
+  const token = props.token as string
+  const { uid } = getUidFromToken(token)
   const [isLoadingTemperature, setIsLoadingTemperature] = useState(false)
   const [roomVisited, setRoomVisited] = useState<RoomVisitedType>()
   const [payloadData, setPayloadData] = useState<PayloadData>({user_id: undefined, room_id: null, temp: null })

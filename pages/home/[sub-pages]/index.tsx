@@ -12,33 +12,28 @@ import TemperatureHistorySubPage from './temperature-history'
 import { decodeJWT } from '@/utils/helpers'
 import ReportDiseaseSubpage from './report-disease'
 import EmergencyReportSubpage from './emergency-report'
+import { PageProps } from '@/utils/types';
 
-export default function SubPage({response, redirectUrl, isAuthorized }: {response: { token: string}, redirectUrl: string, isAuthorized: boolean}) {
+export default function SubPage(props: PageProps) {
   const router = useRouter()
   const { query } = router
   const activeSubpage = query["sub-pages"]
-  const token = response.token as string
-  
+
   return (
-    <HomeContainer>
-        {activeSubpage === 'dashboard' && <DashboardSubpage />}
-        {activeSubpage === 'notifications' && <NotificationsSubpage />}
-        {activeSubpage === 'temperature-history' && <TemperatureHistorySubPage />}
-        {activeSubpage === 'update-profile' && <UpdateProfileSubpage />}
-        {activeSubpage === 'vaccine-information' && <VaccineInformationSubPage />}
-        {activeSubpage === 'room-visited' && <RoomVisitedSubpage />}
-        {activeSubpage === 'report-disease' && <ReportDiseaseSubpage />}
-        {activeSubpage === 'emergency-report' && <EmergencyReportSubpage />}
+    <HomeContainer props={props}>
+        {activeSubpage === 'dashboard' && <DashboardSubpage props={props} />}
+        {activeSubpage === 'notifications' && <NotificationsSubpage props={props}/>}
+        {activeSubpage === 'temperature-history' && <TemperatureHistorySubPage props={props}/>}
+        {activeSubpage === 'update-profile' && <UpdateProfileSubpage props={props}/>}
+        {activeSubpage === 'vaccine-information' && <VaccineInformationSubPage props={props}/>}
+        {activeSubpage === 'room-visited' && <RoomVisitedSubpage props={props}/>}
+        {activeSubpage === 'report-disease' && <ReportDiseaseSubpage props={props}/>}
+        {activeSubpage === 'emergency-report' && <EmergencyReportSubpage props={props}/>}
     </HomeContainer>
   )
 }
-interface Props {
-    isAuthorize: boolean,
-    redirectUrl: string,
-    response: any
-}
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req, res }) => {
   const cookie = cookies.parse(req.headers.cookie || '')
   const token = cookie['token']
   const decodedToken = decodeJWT(token)
@@ -53,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
     }
   }
 
-  let props = { isAuthorize: false, redirectUrl: '/', response: { token }}  
+  let props = { token }  
   if(!token){
     return {
       redirect: {
@@ -61,7 +56,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }
         permanent: false,
       },
     }
-  } 
+  }
   return {
     props: props
   }

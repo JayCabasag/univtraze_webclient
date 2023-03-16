@@ -1,25 +1,8 @@
-import { genericPostRequest } from '../../services/genericPostRequest';
-import { IMAGES } from '../../utils/app_constants'
-import Image from 'next/image'
 import Link from 'next/link'
-import { Router, useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react'
-import Modal from 'react-modal';
-import jwt from 'jsonwebtoken'
-import Cookies from 'js-cookie'
-import userStore from '../../states/user/userStates';
+import React, { useState } from 'react'
 
 export default function Navbar() {
-  const router = useRouter()
-  const { setUid, setEmail, setToken } = userStore((state) => state)
-  const [isFetching, setIsFetching] = useState(false)
-  const [isError, setIsError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [scrollDirection, setScrollDirection] = useState('none')
-
-  const [showLoginModal, setShowLoginModal] = useState(false)
-
   const toggleMobileMenu = () => {
     setShowMobileMenu(prevState => !prevState)
   }

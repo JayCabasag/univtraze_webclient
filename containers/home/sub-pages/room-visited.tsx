@@ -3,6 +3,8 @@ import LoadingSub from '@/components/loading/loading-sub';
 import { genericGetRequest } from '@/services/genericGetRequest';
 import userStore from '@/states/user/userStates';
 import { MAX_INITIAL_LOAD } from '@/utils/app_constants';
+import { getUidFromToken } from '@/utils/parser';
+import { PageProps } from '@/utils/types';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
@@ -21,8 +23,10 @@ interface RoomVisitedType {
     user_id: number;
 }
 
-export default function RoomVisitedContainer() {
-    const { token, uid } = userStore((state) => state)
+export default function RoomVisitedContainer({ props }: {props: PageProps}) {
+    const token = props.token as string
+    const { uid } = getUidFromToken(token)
+    
     const [showAllRoomVisitedHistory, setShowAllRoomVisitedHistory] = useState(false)
     const [isLoadingRoomVisitedHistory, setIsLoadingRoomVisitedHistory] = useState(false)
     const params:Params = { id: uid }

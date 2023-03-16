@@ -1,6 +1,11 @@
+import { getUidFromToken } from '@/utils/parser'
+import { PageProps } from '@/utils/types'
 import React from 'react'
 
-export default function VaccineInformationContainer() {
+export default function VaccineInformationContainer({ props }: {props: PageProps}) {
+  const token = props.token as string
+  const { uid } = getUidFromToken(token)
+
     return (
         <div className="w-full md:max-w-5xl md:p-4 bg-white rounded-lg sm:p-8 dark:bg-gray-800 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">

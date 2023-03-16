@@ -6,6 +6,8 @@ import { MAX_INITIAL_LOAD } from '@/utils/app_constants'
 import LoadingSub from '@/components/loading/loading-sub'
 import { useQuery } from '@tanstack/react-query'
 import { getAllTemperatureHistory } from '@/api/user/getAllTemperatureHistory'
+import { PageProps } from '@/utils/types'
+import { getUidFromToken } from '@/utils/parser'
 
 interface TemperatureHistoryType {
     building_name: string;
@@ -19,16 +21,17 @@ interface TemperatureHistoryType {
     user_id: number;
 }
 
-export default function TemperatureHistoryContainer() {
-    const { token, uid } = userStore((state) => state)
+
+export default function TemperatureHistoryContainer({ props }: {props: PageProps}) {
+    const token = props.token as string
+    const { uid } = getUidFromToken(token)
+
     const [showAllTempHistory, setShowAllTempHistory] = useState(false)
     const [isLoadingTemperatureHistory, setIsLoadingTemperatureHistory] = useState(false)
 
     const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllTemperatureHistory(uid, token)})
     const temperatureHistoryList = data?.data as TemperatureHistoryType[] ?? []
     const hasTemperatureHistory = temperatureHistoryList.length > 0
-
-    console.log(data)
 
     const handleShowAllTempHistory = () => {
         setShowAllTempHistory(true)

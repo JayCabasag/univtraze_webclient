@@ -3,6 +3,8 @@ import LoadingSub from '@/components/loading/loading-sub';
 import { genericGetRequest } from '@/services/genericGetRequest';
 import userStore from '@/states/user/userStates';
 import { IMAGES } from '@/utils/app_constants'
+import { getUidFromToken } from '@/utils/parser';
+import { PageProps } from '@/utils/types';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
@@ -21,14 +23,15 @@ interface NotificationType {
     updatedAt: string;
 }
 
-export default function NotificationsContainer() {
+export default function NotificationsContainer({ props } : { props : PageProps}) {
+  const token = props.token as string
+  const { uid } = getUidFromToken(token)
 
-  const { token, uid } = userStore((state) => state)
   const [showAllNotifications, setShowAllNotifications] = useState(false)
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(false)
   const params: Params = { "start-at": 1}
   const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllNotifications(uid, token, params)})
-  const notificationsList = data.results as NotificationType[] ?? []
+  const notificationsList = data?.results as NotificationType[] ?? []
   const hasNotifications = notificationsList.length > 0
 
   const handleShowAllTempHistory = () => {

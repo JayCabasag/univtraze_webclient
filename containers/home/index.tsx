@@ -12,9 +12,12 @@ import BreadCrumb from '@/components/bread-crumb/BreadCrumb';
 import CovidUpdates from '@/components/covid-updates/CovidUpdates';
 import QrCode from 'qrcode.react'
 import base64 from "base-64"
+import { PageProps } from '@/utils/types';
+import { getUidFromToken } from '@/utils/parser';
 
-export default function HomeContainer({ children }: { children: ReactNode}) {
-  const { uid, type, fullname  } = userStore()
+export default function HomeContainer({ children, props }: { children: ReactNode, props: PageProps }) {
+  const { uid } = getUidFromToken(props.token as string)
+  const { type, fullname  } = userStore()
   const [isShowSidebar, setIsShowSidebar] = useState(false)
   const [showUserQrCode, setShowUserQrCode] = useState(false)
   const stringifiedQrData = base64.encode(JSON.stringify({id: uid, type: type, name: fullname}))
