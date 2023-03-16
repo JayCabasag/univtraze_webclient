@@ -4,5 +4,5 @@ export interface CovidCaseType {
 }
 
 export interface PageProps {
-    [key: string]: unknown
+    token: string
 }
