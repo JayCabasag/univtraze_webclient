@@ -3,7 +3,7 @@ import { PageProps } from '@/utils/types'
 import React from 'react'
 
 export default function VaccineInformationContainer({ props }: {props: PageProps}) {
-  const token = props.token as string
+  const token = props?.token as string ?? ''
   const { uid } = getUidFromToken(token)
 
     return (

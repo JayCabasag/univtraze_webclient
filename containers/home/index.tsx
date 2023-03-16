@@ -16,7 +16,8 @@ import { PageProps } from '@/utils/types';
 import { getUidFromToken } from '@/utils/parser';
 
 export default function HomeContainer({ children, props }: { children: ReactNode, props: PageProps }) {
-  const { uid } = getUidFromToken(props.token as string)
+  const token = props?.token as string ?? ''
+  const { uid } = getUidFromToken(token)
   const { type, fullname  } = userStore()
 
   const [isShowSidebar, setIsShowSidebar] = useState(false)

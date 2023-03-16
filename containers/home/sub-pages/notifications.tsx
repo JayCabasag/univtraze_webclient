@@ -24,7 +24,7 @@ interface NotificationType {
 }
 
 export default function NotificationsContainer({ props } : { props : PageProps}) {
-  const token = props.token as string
+  const token = props?.token as string ?? ''
   const { uid } = getUidFromToken(token)
 
   const [showAllNotifications, setShowAllNotifications] = useState(false)

@@ -32,7 +32,7 @@ interface PayloadData {
 
 
 export default function DashboardContainer({ props } : { props: PageProps}) {
-  const token = props.token as string
+  const token = props?.token as string ?? ''
   const { uid } = getUidFromToken(token)
   const [isLoadingTemperature, setIsLoadingTemperature] = useState(false)
   const [roomVisited, setRoomVisited] = useState<RoomVisitedType>()

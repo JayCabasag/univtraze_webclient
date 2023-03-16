@@ -24,9 +24,9 @@ interface RoomVisitedType {
 }
 
 export default function RoomVisitedContainer({ props }: {props: PageProps}) {
-    const token = props.token as string
-    const { uid } = getUidFromToken(token)
-    
+    const token = props?.token as string ?? ''
+    const { uid } = getUidFromToken(token)  
+
     const [showAllRoomVisitedHistory, setShowAllRoomVisitedHistory] = useState(false)
     const [isLoadingRoomVisitedHistory, setIsLoadingRoomVisitedHistory] = useState(false)
     const params:Params = { id: uid }

@@ -8,7 +8,7 @@ import { PageProps } from '@/utils/types'
 import { getUidFromToken } from '@/utils/parser'
 
 export default function UpdateProfileContainer({ props }: {props: PageProps}) {
-  const token = props.token as string
+  const token = props?.token as string ?? ''
   const { uid } = getUidFromToken(token)
 
   const { email, fullname, type, mobileNumber, birthday } = userStore(state => state)

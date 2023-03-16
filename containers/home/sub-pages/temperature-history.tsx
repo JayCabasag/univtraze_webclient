@@ -23,8 +23,8 @@ interface TemperatureHistoryType {
 
 
 export default function TemperatureHistoryContainer({ props }: {props: PageProps}) {
-    const token = props.token as string
-    const { uid } = getUidFromToken(token)
+    const token = props?.token as string ?? ''
+    const { uid } = getUidFromToken(token)  
 
     const [showAllTempHistory, setShowAllTempHistory] = useState(false)
     const [isLoadingTemperatureHistory, setIsLoadingTemperatureHistory] = useState(false)
