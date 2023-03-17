@@ -24,12 +24,12 @@ export default function HomeContainer({ children, props }: { children: ReactNode
   const [showUserQrCode, setShowUserQrCode] = useState(false)
   const stringifiedQrData = base64.encode(JSON.stringify({id: uid, type: type, name: fullname}))
   const router = useRouter()
-  
+  const params = router.query.params
   const isOnDashboardRoute = 
     router.asPath === '/home' || router.asPath === '/home/dashboard' ||
     router.asPath === '/home/emergency-report' || router.asPath === '/home/report-disease'
 
-  const isHomeRoute = router.asPath === '/home' || router.asPath === '/home/dashboard'
+  const isHomeRoute = router.asPath === '/home' || router.asPath === '/home/dashboard' || params?.[0] === 'dashboard'
   const isNotificationsRoute = router.asPath === '/home/notifications'
   const isTemperatureHistoryRoute = router.asPath === '/home/temperature-history'
   const isUpdateProfileRoute = router.asPath === '/home/update-profile'
