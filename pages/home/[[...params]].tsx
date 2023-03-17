@@ -1,17 +1,33 @@
 import HomeContainer from '@/containers/home'
-import { genericPostRequest } from '@/services/genericPostRequest'
-import { decodeJWT } from '@/utils/helpers'
+import { DashboardContainer, NotificationsContainer, RoomVisitedContainer, TemperatureHistoryContainer, UpdateProfileContainer, VaccineInformationContainer } from '@/containers/home/sub-pages'
+import EmergencyReportContainer from '@/containers/home/sub-pages/dashboard-subpages/emergency-report'
+import ReportDiseaseContainer from '@/containers/home/sub-pages/dashboard-subpages/report-disease'
 import { PageProps } from '@/utils/types'
+import { GetServerSideProps } from 'next'
+import { useRouter } from 'next/router'
 import cookies from 'cookie'
-import { GetServerSideProps, GetStaticProps } from 'next'
-import React, { ReactNode } from 'react'
-import DashboardPage from './[sub-pages]/dashboard'
+import React from 'react'
+import { decodeJWT } from '@/utils/helpers'
+import { genericPostRequest } from '@/services/genericPostRequest'
 
 
-export default function HomePage(props: PageProps) {
+export default function HomePage(props : PageProps) {
+  const router = useRouter()
+  const { params } = router.query
+  const arrayRoutes = params ?? []
+  const activeSubpage = arrayRoutes[0] ?? ''
+
   return (
     <HomeContainer props={props}>
-      <DashboardPage props={props}/>
+      {activeSubpage === ''  && <DashboardContainer props={props}/>}
+      {activeSubpage === 'dashboard'  && <DashboardContainer props={props}/>}
+      {activeSubpage === 'notifications' && <NotificationsContainer props={props}/>}
+      {activeSubpage === 'temperature-history' && <TemperatureHistoryContainer props={props}/>}
+      {activeSubpage === 'update-profile' && <UpdateProfileContainer props={props}/>}
+      {activeSubpage === 'vaccine-information' && <VaccineInformationContainer props={props}/>}
+      {activeSubpage === 'room-visited' && <RoomVisitedContainer props={props}/>}
+      {activeSubpage === 'report-disease' && <ReportDiseaseContainer props={props}/>}
+      {activeSubpage === 'emergency-report' && <EmergencyReportContainer props={props}/>}
     </HomeContainer>
   )
 }
