@@ -157,7 +157,7 @@ export default function VaccineInformationContainer({ props }: {props: PageProps
                     type="selected-first-dose"
                     id="selected-first-dose"
                     name="selected-first-dose"
-                    className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
+                    className="md:w-1/2 mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
                     disabled
                     defaultValue={firstDoseValue}
                   />
@@ -195,7 +195,7 @@ export default function VaccineInformationContainer({ props }: {props: PageProps
                     type="selected-first-dose"
                     id="selected-first-dose"
                     name="selected-first-dose"
-                    className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
+                    className="md:w-1/2 mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
                     disabled
                     defaultValue={secondDoseValue}
                   />
@@ -233,7 +233,7 @@ export default function VaccineInformationContainer({ props }: {props: PageProps
                     type="selected-first-dose"
                     id="selected-first-dose"
                     name="selected-first-dose"
-                    className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
+                    className="md:w-1/2 mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
                     disabled
                     defaultValue={boosterDoseValue}
                   />
