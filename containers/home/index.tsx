@@ -1,19 +1,16 @@
-import { CURRENT_SERVER_DOMAIN } from '@/services/serverConfig';
-import React, { ReactNode, useState } from 'react'
-import { GetServerSideProps } from 'next';
-import { genericPostRequest } from '@/services/genericPostRequest';
-import { decodeJWT } from '@/utils/helpers';
+import React, { ReactNode, useCallback,useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie'
 import userStore from '@/states/user/userStates';
 import Link from 'next/link';
-import { IMAGES } from '@/utils/app_constants';
 import BreadCrumb from '@/components/bread-crumb/BreadCrumb';
 import CovidUpdates from '@/components/covid-updates/CovidUpdates';
 import QrCode from 'qrcode.react'
 import base64 from "base-64"
-import { PageProps } from '@/utils/types';
+import { NotificationType, PageProps } from '@/utils/types';
 import { getUidFromToken } from '@/utils/parser';
+import { getAllNotifications } from '@/api/user/getAllNotifications';
+import { useQuery } from '@tanstack/react-query';
+import notificationsStore from '@/states/notifications/notificationStates';
 
 export default function HomeContainer({ children, props }: { children: ReactNode, props: PageProps }) {
   const token = props?.token as string ?? ''
@@ -34,7 +31,23 @@ export default function HomeContainer({ children, props }: { children: ReactNode
   const isTemperatureHistoryRoute = router.asPath === '/home/temperature-history'
   const isUpdateProfileRoute = router.asPath === '/home/update-profile'
   const isRoomVisitedRoute = router.asPath === '/home/room-visited'
-  const isVaccineInformationRoute = router.asPath === '/home/vaccine-information' 
+  const isVaccineInformationRoute = router.asPath === '/home/vaccine-information'
+
+  const notificationsParams = { "start-at": 1}
+  const { setNotifications, notifications } = notificationsStore(state => state)
+  useQuery({ 
+    queryKey: ['user/nav-all-notifications'], 
+    queryFn: () => getAllNotifications(uid, token, notificationsParams),
+    onSuccess: (response) => {
+      const notificationList = response?.results as NotificationType[] ?? []
+      setNotifications(notificationList)
+    }
+  })
+
+  const totalUnviewedNotifications =  notifications?.filter((notification: NotificationType) => {
+    const isNotificationViewedZero = notification?.notification_is_viewed === 0
+    return isNotificationViewedZero
+  })?.length ?? 0
 
   const handleToggleUserQrCode = () => {
     setShowUserQrCode(prevState => !prevState)
@@ -136,6 +149,13 @@ export default function HomeContainer({ children, props }: { children: ReactNode
                     >
                       Notifications
                     </span>
+                    {totalUnviewedNotifications !== 0 && (
+                      <span 
+                        className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-white bg-red-500 rounded-full dark:bg-blue-900 dark:text-blue-300"
+                      >
+                        {totalUnviewedNotifications}
+                      </span>
+                    )}
                   </Link>
               </li>
               <li>
@@ -203,6 +223,7 @@ export default function HomeContainer({ children, props }: { children: ReactNode
                       ? "flex-shrink-0 w-6 h-6 text-white transition duration-75 dark:text-main"
                       : "flex-shrink-0 w-6 h-6 text-main transition duration-75 dark:text-main group-hover:text-gray-900 dark:group-hover:text-white"
                     }
+                    strokeWidth="2.5"
                     aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"></path>
                   </svg>

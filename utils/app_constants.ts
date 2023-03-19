@@ -29,6 +29,25 @@ export enum UserTypes {
     EMPLOYEE = 'employee'
 }
 
+export enum CommunicableDiseaseTypes {
+    DEFAULT_VALUE = 'Select disease name',
+    COVID_19 = 'Covid-19',
+    MONKEY_POX = 'Monkey Pox',
+    TUBERCULOSIS = 'Tuberculosis',
+    OTHERS = 'Others'
+}
+
+export enum EmergencyReportSymptoms {
+    DEFAULT = "Select a symptom",
+    FEVER = "Fever",
+    COUGH_OR_COLDS = "Cough or Colds",
+    SORE_THROAT = "Sore throat",
+    LOSS_OF_SMELL_OR_TASTE = "Loss of smell or taste",
+    BODY_PAINS_OR_FATIGUES = "Body pains or fatigues",
+    DIARRHEA = "Diarrhea",
+    OTHERS = 'Others'
+  }
+
 export const CONTAINER_WIDTH = '1090px'
 
 export const UserTypeList = Object.values(UserTypes)

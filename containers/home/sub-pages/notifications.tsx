@@ -1,39 +1,35 @@
 import { getAllNotifications } from '@/api/user/getAllNotifications';
+import { updateUserNotificationStatus } from '@/api/user/updateNotificationStatus';
 import LoadingSub from '@/components/loading/loading-sub';
 import { genericGetRequest } from '@/services/genericGetRequest';
+import notificationsStore from '@/states/notifications/notificationStates';
 import userStore from '@/states/user/userStates';
 import { IMAGES } from '@/utils/app_constants'
 import { getUidFromToken } from '@/utils/parser';
-import { PageProps } from '@/utils/types';
+import { NotificationType, PageProps } from '@/utils/types';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 interface Params {
   [key: string]: any;
 }
-interface NotificationType {
-    createdAt: string;
-    id: number;
-    notification_description: string;
-    notification_for: number;
-    notification_is_viewed: number;
-    notification_source: string;
-    notification_title: string;
-    notification_type: string;
-    updatedAt: string;
-}
 
 export default function NotificationsContainer({ props } : { props : PageProps}) {
   const token = props?.token as string ?? ''
   const { uid } = getUidFromToken(token)
-
   const [showAllNotifications, setShowAllNotifications] = useState(false)
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(false)
   const params: Params = { "start-at": 1}
-  const { data, isLoading, isError } = useQuery({ queryKey: ['user/all-temperature-history'], queryFn: () => getAllNotifications(uid, token, params)})
-  const notificationsList = data?.results as NotificationType[] ?? []
-  const hasNotifications = notificationsList.length > 0
+  const { notifications: notificationsList, setTotalUnviewedNotifications } = notificationsStore(state => state)
 
+  useQuery({ 
+    queryKey: ['user/update-notifications-status'], 
+    queryFn: () => updateUserNotificationStatus(uid, token ),
+    onSuccess: (response) => {
+      setTotalUnviewedNotifications(0)
+    }
+  })
+  
   const handleShowAllTempHistory = () => {
     setShowAllNotifications(true)
   }
