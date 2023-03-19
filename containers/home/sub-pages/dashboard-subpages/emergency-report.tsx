@@ -1,5 +1,6 @@
 import { postEmergencyReport } from '@/api/report/postEmergencyReport'
 import { getAllRooms } from '@/api/rooms/getAllRooms'
+import { queryClient } from '@/pages/_app'
 import { EmergencyReportSymptoms } from '@/utils/app_constants'
 import { getUidFromToken } from '@/utils/parser'
 import { PageProps, RoomType } from '@/utils/types'
@@ -10,7 +11,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 export default function EmergencyReportContainer({props}: { props: PageProps }) {
   const token = props?.token as string ?? ''
@@ -23,6 +24,7 @@ export default function EmergencyReportContainer({props}: { props: PageProps }) 
   const [symptom, setSymptom] = useState('')
   const [description, setDescription] = useState('')
   const [roomNumber, setRoomNumber] = useState<null | number | string>(null)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
   const query = useQuery({ queryKey: ['all-rooms'], queryFn: () => getAllRooms(token)})
   const allRoomsResponse = query?.data
@@ -43,6 +45,7 @@ export default function EmergencyReportContainer({props}: { props: PageProps }) 
     onSuccess: () => {
       resetStatus()
       setSuccess(true)
+      queryClient.invalidateQueries(({ queryKey: ['user/nav-all-notifications'] }))
     },
     onError: () => {
       resetStatus()
@@ -114,7 +117,7 @@ export default function EmergencyReportContainer({props}: { props: PageProps }) 
           <h5 className="text-xl font-bold leading-none text-main dark:text-white">Emergency Report</h5>
     </div>
     <div className="flow-root space-y-2 md:space-y-4">
-      <form className="space-y-4" onSubmit={handleSubmitEmergencyReport}>
+      <form className="space-y-4" onSubmit={handleSubmitEmergencyReport} ref={formRef}>
           <div>
             <label className="sr-only" htmlFor="patient-name">Patient name</label>
             <input

@@ -12,7 +12,7 @@ import { QueryClientProvider, QueryClient  } from '@tanstack/react-query'
 
 Modal.setAppElement('#__next')
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
