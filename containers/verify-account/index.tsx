@@ -26,6 +26,7 @@ interface UserDetailsType {
   studentId?: string
   course?: string
   yearAndSection?: string
+  employeePosition: string
   employeeDepartment?: string
   employeeId?: string
   visitorSelectedValidId?: string
@@ -43,7 +44,7 @@ export default function VerifyAccountContainer() {
   const [selectedUserType, setSelectedUserType] = useState('')
   const [visitorSelectedValidId, setVisitorSelectedValidId] = useState('')
   const [userDetails, setUserDetails] = useState<UserDetailsType>(
-    {uid, type: '', email , firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', address: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',studentId: '', course: '', yearAndSection: '', employeeDepartment: '', employeeId: '', visitorSelectedValidId: '', visitorValidIdNumber: ''})
+    {uid, type: '', email , firstname: '', middlename: '', lastname: '', suffix: '', dateOfBirth: '', gender: '', mobileNumber: '', address: '', backIdPhotoUrl: '', frontIdPhotoUrl:'',studentId: '', course: '', yearAndSection: '', employeeDepartment: '', employeePosition: '', employeeId: '', visitorSelectedValidId: '', visitorValidIdNumber: ''})
   const [uploadFrontIdPhotoProgress, setUploadFrontIdPhotoProgress] = useState(0)
   const [uploadBackIdPhotoProgress, setUploadBackIdPhotoProgress] = useState(0)
   const [hasSelectedAnId, sethasSelectedAnId] = useState(false)
@@ -77,7 +78,6 @@ export default function VerifyAccountContainer() {
     })
   }
 
-
   const handleUpdateEmployeeNumber = (event:  React.ChangeEvent<HTMLInputElement>) => {
     const employeeNumberValue = event?.currentTarget?.value
     setUserDetails(prevState => {
@@ -89,6 +89,13 @@ export default function VerifyAccountContainer() {
     const employeeDepartmentValue = event?.currentTarget?.value
     setUserDetails(prevState => {
       return {...prevState, employeeDepartment: employeeDepartmentValue}
+    })
+  }
+
+  const handleUpdateEmployeePosition = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const employeePositionValue = event?.currentTarget?.value
+    setUserDetails(prevState => {
+      return {...prevState, employeePosition: employeePositionValue}
     })
   }
 
@@ -242,6 +249,10 @@ export default function VerifyAccountContainer() {
 
     if(selectedUserType === UserTypes.EMPLOYEE && userDetails.employeeDepartment === ''){
       return setEncounteredError('Add your faculty/Department')
+    }
+
+    if(selectedUserType === UserTypes.EMPLOYEE && userDetails.employeePosition === ''){
+      return setEncounteredError('Add your position as an employee')
     }
 
     if(selectedUserType === UserTypes.VISITOR && userDetails.visitorSelectedValidId === ''){
@@ -399,7 +410,8 @@ export default function VerifyAccountContainer() {
 			gender: updatedUserDetails.gender, 
 			address: updatedUserDetails.address, 
 			birthday: updatedUserDetails.dateOfBirth,
-      position: updatedUserDetails.employeeDepartment,
+      department: updatedUserDetails.employeeDepartment,
+      position: updatedUserDetails.employeePosition,
 			employee_id: updatedUserDetails.employeeId, 
 			mobile_number: updatedUserDetails.mobileNumber, 
 			email: email, 
@@ -514,7 +526,7 @@ export default function VerifyAccountContainer() {
                 <div>
                     <input
                       className="peer sr-only"
-                      id="student"
+                      id="Student"
                       type="radio"
                       tabIndex={-1}
                       name="userType"
@@ -522,7 +534,7 @@ export default function VerifyAccountContainer() {
                     />
 
                     <label
-                        htmlFor="student"
+                        htmlFor="Student"
                         className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
                         tabIndex={0}
                     >
@@ -533,7 +545,7 @@ export default function VerifyAccountContainer() {
                     <div>
                     <input
                         className="peer sr-only"
-                        id="employee"
+                        id="Employee"
                         type="radio"
                         tabIndex={-1}
                         name="userType"
@@ -541,7 +553,7 @@ export default function VerifyAccountContainer() {
                     />
 
                     <label
-                        htmlFor="employee"
+                        htmlFor="Employee"
                         className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
                         tabIndex={0}
                     >
@@ -552,7 +564,7 @@ export default function VerifyAccountContainer() {
                 <div>
                 <input
                     className="peer sr-only"
-                    id="visitor"
+                    id="Visitor"
                     type="radio"
                     tabIndex={-1}
                     name="userType"
@@ -560,7 +572,7 @@ export default function VerifyAccountContainer() {
                 />
 
                 <label
-                    htmlFor="visitor"
+                    htmlFor="Visitor"
                     className="cursor-pointer block w-full rounded-lg border border-gray-200 p-2 hover:border-black peer-checked:border-black peer-checked:bg-black peer-checked:text-white"
                     tabIndex={0}
                 >
@@ -655,6 +667,21 @@ export default function VerifyAccountContainer() {
                         id="employeeDepartment"
                         className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateEmployeeDepartment(event)}
+                      />
+                    </div>
+                    <div className='w-full'>
+                      <label
+                        htmlFor="employeePosition"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Position
+                      </label>
+    
+                      <input
+                        type="text"
+                        id="employeePosition"
+                        className="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleUpdateEmployeePosition(event)}
                       />
                     </div>
                   </>

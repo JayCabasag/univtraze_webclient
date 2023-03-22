@@ -68,6 +68,10 @@ export default function HomeContainer({ children, props }: { children: ReactNode
     document.body.removeChild(downloadLink);
   }
 
+  const handleCloseSidebar = () => {
+    setIsShowSidebar(prevState => !prevState)
+  }
+
   return (
       <section>
         <nav className="fixed top-0 z-40 w-full bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-md text-main">
@@ -98,12 +102,17 @@ export default function HomeContainer({ children, props }: { children: ReactNode
         </div>
       </nav>
 
-      <aside id="logo-sidebar" className={isShowSidebar ? "w-3/4 md:w-64 z-30 fixed shadow-md h-full md:-mt-[3px] md:z-30" : "fixed top-0 left-0 z-30 md:w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 shadow-md"} aria-label="Sidebar">
+      <aside id="logo-sidebar"
+      className={isShowSidebar 
+        ? "w-3/4 md:w-64 z-30 fixed shadow-md h-full md:pt-[19px] md:-mt-[3px] md:z-30" 
+        : "fixed top-0 left-0 z-30 md:w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 shadow-md"
+      } aria-label="Sidebar">
         <div className="h-full pt-4 md:pt-0 px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
             <ul className="space-y-2">
               <li>
                   <Link
                     href="/home/dashboard"
+                    onClick={handleCloseSidebar}
                     className={isHomeRoute 
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -129,6 +138,7 @@ export default function HomeContainer({ children, props }: { children: ReactNode
               <li>
                   <Link
                     href="/home/notifications"
+                    onClick={handleCloseSidebar}
                     className={isNotificationsRoute
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -161,6 +171,7 @@ export default function HomeContainer({ children, props }: { children: ReactNode
               <li>
                   <Link
                     href="/home/temperature-history"
+                    onClick={handleCloseSidebar}
                     className={isTemperatureHistoryRoute
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -185,7 +196,8 @@ export default function HomeContainer({ children, props }: { children: ReactNode
               </li>
               <li>
                   <Link 
-                    href="/home/update-profile" 
+                    href="/home/update-profile"
+                    onClick={handleCloseSidebar}
                     className={isUpdateProfileRoute
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -211,6 +223,7 @@ export default function HomeContainer({ children, props }: { children: ReactNode
               <li>
                   <Link
                     href="/home/room-visited"
+                    onClick={handleCloseSidebar}
                     className={isRoomVisitedRoute
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -240,6 +253,7 @@ export default function HomeContainer({ children, props }: { children: ReactNode
               <li>
                   <Link
                     href="/home/vaccine-information"
+                    onClick={handleCloseSidebar}
                     className={isVaccineInformationRoute
                       ? "bg-main flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white  dark:hover:bg-gray-700" 
                       : "flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"

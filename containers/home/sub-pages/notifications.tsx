@@ -21,6 +21,7 @@ export default function NotificationsContainer({ props } : { props : PageProps})
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(false)
   const params: Params = { "start-at": 1}
   const { notifications: notificationsList, setTotalUnviewedNotifications } = notificationsStore(state => state)
+  const hasNotifications = notificationsList?.length > 0
 
   useQuery({ 
     queryKey: ['user/update-notifications-status'], 
@@ -46,8 +47,13 @@ export default function NotificationsContainer({ props } : { props : PageProps})
             <ul role="list" className="">
             {isLoadingNotifications && (
                     <LoadingSub />
-                )}
-            {!isLoadingNotifications &&  notificationsList.map((notificationList: NotificationType, index: number) => {
+            )}
+            {!isLoadingNotifications &&  !hasNotifications && (
+                    <div className='w-full'>
+                        <p className='font-medium text-center text-main'>No Notifications...</p>
+                    </div>
+            )}
+            {!isLoadingNotifications && hasNotifications &&  notificationsList.map((notificationList: NotificationType, index: number) => {
                 return <li className="py-3 sm:py-4" key={index}>
                       <div className="flex items-center space-x-4">
                           <div className="flex-shrink-0">

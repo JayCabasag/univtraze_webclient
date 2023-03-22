@@ -13,10 +13,10 @@ export default function AccountCreatedContainer() {
         <div className="text-center">
             <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">Account created successfully!</h3>
             <p className="text-gray-600 my-2">Thank you for completing your personal information.</p>
-            <p> Have a great day!  </p>
+            <p>Please relogin and Have a great day!  </p>
             <div className="py-10 text-center">
-                <Link href='/home' className="px-12 bg-main text-white font-semibold py-3">
-                    Start now
+                <Link href='/social/login' className="px-12 bg-main text-white font-semibold py-3">
+                    Re login
                </Link>
             </div>
         </div>

@@ -87,21 +87,21 @@ export default function RegisterContainer() {
               <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="email">
                 Email
               </label>
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="email" id="email" name="email" required />
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="email" id="email" name="email" required />
             </div>
 
             <div className="mb-4">
               <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="password">
                 Password
               </label>
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="password" id="password" name="password" required />
+              <input className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="password" id="password" name="password" required />
             </div>
             
             <div className="mb-4">
               <label className="block text-slate-500 font-bold mb-2 text-sm" htmlFor="passwordConfirm">
                 Confirm Password
               </label>
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="password" id="passwordConfirm" name="passwordConfirm" required />
+              <input className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline text-slate-500 border-slate-300" type="password" id="passwordConfirm" name="passwordConfirm" required />
             </div>
             {isError && (
               <div className="bg-red-500 text-white text-center py-2 px-3 rounded mb-3" role="alert" id="error-message">
