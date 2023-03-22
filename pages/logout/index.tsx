@@ -19,7 +19,7 @@ export default function LogoutPage() {
           Cookies.remove('token')
           localStorage.clear()
           removeUserDetails()
-          router.reload()
+          router.replace('/')
         } catch (error) {
           setIsLoggedOutFailed(true)
         }
