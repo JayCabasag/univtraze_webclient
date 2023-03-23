@@ -292,7 +292,10 @@ export default function UpdateProfileContainer({ props }: {props: PageProps}) {
         >
           <h5 className="text-xl font-semibold">{fullname}</h5>
           <h6 className="font-semibold text-main dark:text-primary-500 capitalize">
-            {type}
+            {type} - {moment(birthday).format('MMM DD YYYY') ?? ''}
+          </h6>
+          <h6 className="font-semibold text-slate-400 text-xs lowercase">
+            {email}
           </h6>
         </div>
         <input
@@ -315,29 +318,6 @@ export default function UpdateProfileContainer({ props }: {props: PageProps}) {
         
       </div>
       <form onSubmit={handleSaveChanges}>
-        <div className="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
-                <label
-                  htmlFor="website" 
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Date of birth
-                </label>
-                <input
-                  type="url" 
-                  disabled
-                  id="website"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main"
-                  placeholder="Date of birth" 
-                  defaultValue={moment(birthday).format('MMM DD YYYY') ?? ''}
-                  required 
-                />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-              <input disabled type="email" id="email" defaultValue={email} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-main focus:border-main block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main dark:focus:border-main" placeholder="Email" required />
-            </div>
-        </div>
         <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
               <li className="mr-2" role="presentation">
@@ -513,14 +493,14 @@ export default function UpdateProfileContainer({ props }: {props: PageProps}) {
                             </span>
                         </button>
                 </div>
-                <label htmlFor="new-password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">new password</label>
+                <label htmlFor="new-password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New password</label>
                 <div className="relative mt-1">
                   <input
                     type={showNewPassword ? 'text' : 'password'}
                     name='new-password'
                     id="new-password" 
                     className="text-gray-900 text-sm rounded-lg border border-gray-300 focus:ring-main focus:border-main w-full bg-gray-50 py-3 px-4 pr-12 shadow-sm"
-                    placeholder="Confirm password"
+                    placeholder="New password"
                     disabled={!isEditable}
                   />
                           <button
@@ -564,7 +544,7 @@ export default function UpdateProfileContainer({ props }: {props: PageProps}) {
                       name='confirm-new-password'
                       id="confirm-new-password" 
                       className="text-gray-900 text-sm rounded-lg border border-gray-300 focus:ring-main focus:border-main w-full bg-gray-50 py-3 px-4 pr-12 shadow-sm"
-                      placeholder="Old password"
+                      placeholder="Confirm new password"
                       disabled={!isEditable}
                     />
                             <button
@@ -627,7 +607,7 @@ export default function UpdateProfileContainer({ props }: {props: PageProps}) {
           className="text-white bg-main hover:bg-main focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-main dark:hover:bg-main dark:focus:ring-main"
           disabled={!isEditable}
         >
-          Save changes
+          {updatePasswordMutation.isLoading || updateProfileMutation.isLoading ? 'Please wait...' : 'Save changes' }
         </button>
         {/* <button type="submit" className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Deactivate account</button> */}
        </div>
