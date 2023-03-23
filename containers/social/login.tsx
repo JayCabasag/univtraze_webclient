@@ -181,8 +181,8 @@ export default function LoginPage() {
                       </button>
 
                       <p className="text-center text-sm text-gray-500">
-                        No account? {' '}
-                        <Link className="underline" href="/social/signup">Sign up</Link>
+                        Forgot password? {' '}
+                        <Link className="underline" href="/social/forgot-password">Click here</Link>
                       </p>
                     </form>
                   </div>
