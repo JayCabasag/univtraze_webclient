@@ -7,12 +7,12 @@ export default function AboutContainer() {
     <section className="text-gray-600 body-font" id='about'>
       <div className="container px-5 py-6 pt-24 mx-auto">
         <div className="text-center mb-20">
-          <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4 text-main">About</h1>
+          <h1 className="sm:text-3xl text-2xl font-medium text-center title-font mb-4 text-main">About</h1>
           <p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">Univtraze is an advanced contact tracing app that uses technology and data analysis to quickly and accurately prevent the spread of diseases. It provides real-time insights and alerts to protect communities and individuals, all while prioritizing data privacy and security.</p>
         </div>
         
         <div className="text-center mb-20">
-          <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4 text-main">Tracing workflow</h1>
+          <h1 className="sm:text-3xl text-2xl font-medium text-center title-font  mb-4 text-main">Tracing workflow</h1>
           <div className="container px-5 py-2 mx-auto flex flex-wrap">
           <div className="flex flex-wrap w-full">
             <div className="lg:w-2/5 md:w-1/2 md:pr-10 md:py-6">
@@ -27,7 +27,7 @@ export default function AboutContainer() {
                 </div>
                 <div className="flex-grow pl-4">
                   <h2 className="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">STEP 1</h2>
-                  <p className="leading-relaxed">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione libero harum beatae culpa recusandae autem facilis. Quasi ipsa hic ratione. </p>
+                  <p className="leading-relaxed">Register or Login</p>
                 </div>
               </div>
               <div className="flex relative pb-12">
@@ -41,7 +41,7 @@ export default function AboutContainer() {
                 </div>
                 <div className="flex-grow pl-4">
                   <h2 className="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">STEP 2</h2>
-                  <p className="leading-relaxed">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deserunt minima ipsam dolorum quisquam, magnam enim rerum dicta error incidunt.</p>
+                  <p className="leading-relaxed">Report communicatble disease, or report emergency</p>
                 </div>
               </div>
               <div className="flex relative pb-12">
@@ -56,7 +56,7 @@ export default function AboutContainer() {
                 </div>
                 <div className="flex-grow pl-4">
                   <h2 className="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">STEP 3</h2>
-                  <p className="leading-relaxed">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis non ullam enim nostrum quia, cupiditate voluptatum quam eligendi et sed.</p>
+                  <p className="leading-relaxed">Clinic will take care of it, and provide you with the neccesary prescription.</p>
                 </div>
               </div>
               <div className="flex relative pb-12">
@@ -71,7 +71,7 @@ export default function AboutContainer() {
                 </div>
                 <div className="flex-grow pl-4">
                   <h2 className="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">STEP 4</h2>
-                  <p className="leading-relaxed">Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi culpa atque sint facilis voluptas eos earum iusto quod assumenda ullam.</p>
+                  <p className="leading-relaxed">Track first degree, second degree and third degree victims.</p>
                 </div>
               </div>
               <div className="flex relative">
@@ -83,7 +83,7 @@ export default function AboutContainer() {
                 </div>
                 <div className="flex-grow pl-4">
                   <h2 className="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">FINISH</h2>
-                  <p className="leading-relaxed">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui repellat aspernatur vel temporibus incidunt autem dolorum voluptatibus ratione adipisci saepe.</p>
+                  <p className="leading-relaxed">WIll take care of the rest.</p>
                 </div>
               </div>
             </div>
